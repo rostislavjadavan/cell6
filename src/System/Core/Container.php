@@ -30,9 +30,10 @@ class Container {
 		if ($constructor == false) {
 			return $r->newInstanceArgs();
 		}
-		
+				
 		foreach ($constructor->getParameters() as $param) {
 			$name = $param->getName();
+			
 			if (array_key_exists($name, self::$storage)) {
 				if (is_callable(self::$storage[$name])) {
 					$callParams[$name] = call_user_func(self::$storage[$name]);
@@ -46,13 +47,14 @@ class Container {
 				if ($param->getClass() == null) {
 					if ($param->isDefaultValueAvailable()) {
 						$callParams[$name] = $param->getDefaultValue();
-					} else
+					} else {
 						throw new SystemException("Cannot inject '$name'. Unable to find key in container or create basic type.");
+					}
 				} else {
 					$callParams[$name] = $param->getClass()->newInstance();
 				}
 			}
-		}
+		}		
 
 		return $r->newInstanceArgs($callParams);
 	}

@@ -54,19 +54,22 @@ class Request {
 	/**
 	 * Init
 	 */
-	public function __construct() {
-		// Init 
+	public function __construct() {		
+		// Init 				
 		$this->server = new \System\Core\ArrayList($_SERVER);
 		$this->query = new \System\Core\ArrayList($_GET);
 		$this->post = new \System\Core\ArrayList($_POST);
-		$this->files = $_FILES;
-		$this->cookies = array(); //\Core\Cookie::getAll($_COOKIE);
-		$this->session = array(); //new \Core\Session();
+		$this->files = new \System\Core\ArrayList($_FILES);
+		$this->cookies = new \System\Core\ArrayList($_COOKIE);
+		$this->session = \System\Core\Container::buildAndAdd('session', '\System\Http\Session');
+		
 		// Extract rewrite base (base directory)
 		$rewriteBase = '';
-		foreach (explode('/', $this->server->get('SCRIPT_NAME')) as $part) {
-			if (strpos($part, '.php') === false) {
-				$rewriteBase = '/' . $part;
+		if ($this->server->is('SCRIPT_NAME')) {
+			foreach (explode('/', $this->server->get('SCRIPT_NAME')) as $part) {
+				if (strpos($part, '.php') === false) {
+					$rewriteBase = '/' . $part;
+				}
 			}
 		}
 
@@ -81,8 +84,9 @@ class Request {
 			$uri = $this->server->get('REQUEST_URI');
 
 			// Remove query string from REQUEST_URI
-			if (strpos($uri, '?') !== false)
+			if (strpos($uri, '?') !== false) {
 				$uri = substr($uri, 0, strpos($uri, '?'));
+			}
 
 			$this->path = str_replace($rewriteBase, '', $uri);
 		}
@@ -125,8 +129,8 @@ class Request {
 	 * 
 	 * @return string Host
 	 */
-	public function getHost() {
-		return $this->server->get('HTTP_HOST');
+	public function getHost() {		
+		return !$this->server->is('HTTP_HOST') ? false : $this->server->get('HTTP_HOST');
 	}
 
 	/**
@@ -136,6 +140,25 @@ class Request {
 	 */
 	public function isGet() {
 		return ($this->getMethod() == 'GET');
+	}
+	
+	/**
+	 * Get query value(s)
+	 * If key is null returns all query data
+	 * 
+	 * @param string Key
+	 * @return mixed
+	 */
+	public function getQuery($key = null) {
+		if ($key == null) {
+			return $this->get;
+		}
+
+		if ($this->get->is($key)) {
+			return $this->get->get($key);
+		}
+
+		return null;
 	}
 
 	/**
@@ -149,25 +172,39 @@ class Request {
 
 	/**
 	 * Get post value(s)
-	 * If key je null returns all post data
+	 * If key is null returns all post data
 	 * 
 	 * @param string Key
 	 * @return mixed
 	 */
 	public function getPost($key = null) {
 		if ($key == null) {
-			return $_POST;
+			return $this->post;
 		}
 
-		if (array_key_exists($key, $_POST)) {
-			return $_POST[$key];
+		if ($this->post->is($key)) {
+			return $this->post->get($key);
 		}
 
 		return null;
 	}
 
+	/**
+	 * Get cookie(s)
+	 * 
+	 * @param string $name
+	 * @return string|array
+	 */
 	public function getCookie($name) {
-		return (array_key_exists($name, $_COOKIE) ? $_COOKIE[$name] : false);
+		if ($name == null) {
+			return $this->cookies;
+		}
+
+		if ($this->cookies->is($name)) {
+			return $this->cookies->get($name);
+		}
+
+		return null;
 	}
 
 	/**
@@ -176,9 +213,9 @@ class Request {
 	 * @return bool true if it is HTTPS
 	 */
 	public function isHttps() {
-		if (!$this->server->is('HTTPS'))
+		if (!$this->server->is('HTTPS')) {
 			return false;
-		else {
+		} else {
 			// IIS specific
 			return ($this->server->get('HTTPS') == 'off') ? false : true;
 		}
@@ -191,7 +228,8 @@ class Request {
 	 */
 	public function isAjax() {
 		try {
-			return (strtolower($this->server->get('HTTP_X_REQUESTED_WITH')) == 'xmlhttprequest');
+			return ($this->server->is('HTTP_X_REQUESTED_WITH') && 
+					strtolower($this->server->get('HTTP_X_REQUESTED_WITH')) == 'xmlhttprequest');
 		} catch (\Exception $e) {
 			return false;
 		}
@@ -229,6 +267,9 @@ class Request {
 	 * @return boolean
 	 */
 	public function isLocalhost() {
+		if (!$this->server->is('REMOTE_ADDR')) {
+			return false;
+		}
 		return (in_array( $this->server->get('REMOTE_ADDR'), $this->localhostDomainsWhitelist));
 	}
 

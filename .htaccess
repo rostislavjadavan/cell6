@@ -2,7 +2,7 @@
 RewriteEngine On
 
 # Installation directory
-RewriteBase /cell6v3/
+RewriteBase /cell6/
 
 # Protect application and system files from being viewed
 #RewriteRule ^(modules|system) - [F,L]

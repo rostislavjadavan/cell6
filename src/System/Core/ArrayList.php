@@ -93,6 +93,13 @@ class ArrayList implements \ArrayAccess, \Countable {
 	public function isEmpty() {
 		return empty($this->data);
 	}
+	
+	/**
+	 * Clear all data	 
+	 */
+	public function clear() {
+		$this->data = array();
+	}
 
 	/**
 	 * Return number of elements in list
