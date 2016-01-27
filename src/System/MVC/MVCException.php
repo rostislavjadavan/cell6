@@ -1,4 +1,5 @@
 <?php
+
 /**
  * MVC Exception
  *
@@ -9,5 +10,5 @@
 namespace System\MVC;
 
 class MVCException extends \System\Core\SystemException {
-
+	
 }

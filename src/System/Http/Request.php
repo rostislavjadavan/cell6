@@ -54,7 +54,7 @@ class Request {
 	/**
 	 * Init
 	 */
-	public function __construct() {		
+	public function __construct() {
 		// Init 				
 		$this->server = new \System\Core\ArrayList($_SERVER);
 		$this->query = new \System\Core\ArrayList($_GET);
@@ -62,7 +62,7 @@ class Request {
 		$this->files = new \System\Core\ArrayList($_FILES);
 		$this->cookies = new \System\Core\ArrayList($_COOKIE);
 		$this->session = \System\Core\Container::buildAndAdd('session', '\System\Http\Session');
-		
+
 		// Extract rewrite base (base directory)
 		$rewriteBase = '';
 		if ($this->server->is('SCRIPT_NAME')) {
@@ -129,7 +129,7 @@ class Request {
 	 * 
 	 * @return string Host
 	 */
-	public function getHost() {		
+	public function getHost() {
 		return !$this->server->is('HTTP_HOST') ? false : $this->server->get('HTTP_HOST');
 	}
 
@@ -141,7 +141,7 @@ class Request {
 	public function isGet() {
 		return ($this->getMethod() == 'GET');
 	}
-	
+
 	/**
 	 * Get query value(s)
 	 * If key is null returns all query data
@@ -195,7 +195,7 @@ class Request {
 	 * @param string $name
 	 * @return string|array
 	 */
-	public function getCookie($name) {
+	public function getCookie($name = null) {
 		if ($name == null) {
 			return $this->cookies;
 		}
@@ -228,7 +228,7 @@ class Request {
 	 */
 	public function isAjax() {
 		try {
-			return ($this->server->is('HTTP_X_REQUESTED_WITH') && 
+			return ($this->server->is('HTTP_X_REQUESTED_WITH') &&
 					strtolower($this->server->get('HTTP_X_REQUESTED_WITH')) == 'xmlhttprequest');
 		} catch (\Exception $e) {
 			return false;
@@ -242,7 +242,7 @@ class Request {
 	 */
 	public function getRequestUrl() {
 		$base = trim($this->baseUrl, US) . US;
-		return $base.$this->path;
+		return $base . $this->path;
 	}
 
 	/**
@@ -253,13 +253,13 @@ class Request {
 	public function getRequestPath() {
 		return $this->path;
 	}
-	
+
 	/**
 	 * Localhost domains
 	 * 
 	 * @var string 
 	 */
-	private $localhostDomainsWhitelist = array( '127.0.0.1', '::1' );
+	private $localhostDomainsWhitelist = array('127.0.0.1', '::1');
 
 	/**
 	 * Check if system is running on localhost
@@ -270,7 +270,7 @@ class Request {
 		if (!$this->server->is('REMOTE_ADDR')) {
 			return false;
 		}
-		return (in_array( $this->server->get('REMOTE_ADDR'), $this->localhostDomainsWhitelist));
+		return (in_array($this->server->get('REMOTE_ADDR'), $this->localhostDomainsWhitelist));
 	}
 
 }

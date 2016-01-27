@@ -1,4 +1,5 @@
 <?php
+
 /**
  * System Exception
  *
@@ -9,5 +10,5 @@
 namespace System\Core;
 
 class SystemException extends \Exception {
-
+	
 }

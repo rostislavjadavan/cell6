@@ -40,21 +40,21 @@ class Route {
 	 * @param String URI
 	 * @param array Parameter constraints
 	 */
-	public function __construct(array $params = array(),  array $paramsConstraints = array()) {
+	public function __construct(array $params = array(), array $paramsConstraints = array()) {
 		if (array_key_exists('uri', $params)) {
 			$this->uri = $params['uri'];
 			$this->routeRegexp = $this->buildRouteRegexp($this->uri);
 			unset($params['uri']);
 		}
-		
+
 		if (array_key_exists('action', $params)) {
 			list($class, $method) = explode('#', $params['action']);
 			unset($params['action']);
 			$params['class'] = $class;
 			$params['method'] = $method;
-		}		
+		}
 		$this->params = $params;
-		$this->paramsConstraints = $paramsConstraints;		
+		$this->paramsConstraints = $paramsConstraints;
 	}
 
 	/**
@@ -67,7 +67,7 @@ class Route {
 		if ($this->uri === null) {
 			return false;
 		}
-		
+
 		$uri = trim($uri, '/');
 
 		if (!preg_match($this->routeRegexp, $uri, $matches)) {
@@ -91,26 +91,25 @@ class Route {
 
 		return $params;
 	}
-	
+
 	/**
 	 * Return response
 	 * @return Response Response
 	 */
-	public function getResponse($params = array()) {		
+	public function getResponse($params = array()) {
 		$class = \System\Core\Container::build('\System\Core\Invokable', array_merge($this->params, $params));
-		return $class->invoke($params);		
+		return $class->invoke($params);
 	}
-	
+
 	/**
 	 * Returns route params (controller, action ...)
 	 * 
 	 * @return array
 	 */
-	public function getParams()
-	{
+	public function getParams() {
 		return $this->params;
 	}
-	
+
 	/**
 	 * Create URI for given parameters
 	 * 
@@ -122,41 +121,41 @@ class Route {
 		$defaults = $this->params;
 
 		$compile = function ($portion, $required) use (&$compile, $defaults, $params) {
-					$missing = array();
+			$missing = array();
 
-					$pattern = '#(?:' . Route::REGEX_KEY . '|' . Route::REGEX_GROUP . ')#';
-					$result = preg_replace_callback($pattern, function ($matches) use (&$compile, $defaults, &$missing, $params, &$required) {
-								if ($matches[0][0] === '<') {
-									$param = $matches[1];
+			$pattern = '#(?:' . Route::REGEX_KEY . '|' . Route::REGEX_GROUP . ')#';
+			$result = preg_replace_callback($pattern, function ($matches) use (&$compile, $defaults, &$missing, $params, &$required) {
+				if ($matches[0][0] === '<') {
+					$param = $matches[1];
 
-									if (isset($params[$param])) {
-										$required = ($required OR !isset($defaults[$param]) OR $params[$param] !== $defaults[$param]);
-										return $params[$param];
-									}
-
-									// Add default parameter to this result
-									if (isset($defaults[$param]))
-										return $defaults[$param];
-
-									$missing[] = $param;
-								}
-								else {
-									$result = $compile($matches[2], FALSE);
-
-									if ($result[1]) {
-										$required = TRUE;
-
-										return $result[0];
-									}
-								}
-							}, $portion);
-
-					if ($required && $missing) {
-						throw new \Exception('Required route parameter not passed: ' . reset($missing));
+					if (isset($params[$param])) {
+						$required = ($required OR ! isset($defaults[$param]) OR $params[$param] !== $defaults[$param]);
+						return $params[$param];
 					}
 
-					return array($result, $required);
-				};
+					// Add default parameter to this result
+					if (isset($defaults[$param]))
+						return $defaults[$param];
+
+					$missing[] = $param;
+				}
+				else {
+					$result = $compile($matches[2], FALSE);
+
+					if ($result[1]) {
+						$required = TRUE;
+
+						return $result[0];
+					}
+				}
+			}, $portion);
+
+			if ($required && $missing) {
+				throw new \Exception('Required route parameter not passed: ' . reset($missing));
+			}
+
+			return array($result, $required);
+		};
 
 		list($uri) = $compile($this->uri, TRUE);
 

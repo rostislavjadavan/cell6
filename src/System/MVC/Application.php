@@ -23,11 +23,11 @@ class Application {
 		$requestPath = $this->request->getRequestPath();
 
 		try {
-			$response = $this->router->match($requestPath);					
+			$response = $this->router->match($requestPath);
 		} catch (\Exception $e) {
 			$response = $this->processError($e);
 		}
-		
+
 		// Send response to browser
 		$this->sendSytemHeaders();
 		if ($response instanceof \System\Http\Response) {
@@ -38,7 +38,7 @@ class Application {
 			echo $response;
 		}
 	}
-	
+
 	protected function processError(\Exception $e) {
 		if (DEBUG_MODE) {
 			throw $e;
@@ -46,13 +46,14 @@ class Application {
 			try {
 				return $this->router->get('500')->getResponse();
 			} catch (MVCException $e) {
-				$content = "<html><head><title>Internal Server Error</title></htead><h1>500</h1><p>Internal Server Error</p>";				
+				$content = "<html><head><title>Internal Server Error</title></htead><h1>500</h1><p>Internal Server Error</p>";
 				return \System\Core\Container::build('\System\Http\HtmlResponse', array('content' => $content, 'code' => 500));
 			}
-		}		
+		}
 	}
-	
+
 	protected function sendSytemHeaders() {
-		header('X-System: '.SYSNAME.'_'.SYSVER);
+		header('X-System: ' . SYSNAME . '_' . SYSVER);
 	}
+
 }

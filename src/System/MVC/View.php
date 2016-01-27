@@ -111,8 +111,8 @@ class View {
 	 * 
 	 * @return string Output
 	 */
-	public function __toString() {		
-		return $this->render();		
+	public function __toString() {
+		return $this->render();
 	}
 
 }

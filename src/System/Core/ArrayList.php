@@ -13,7 +13,7 @@ class ArrayList implements \ArrayAccess, \Countable {
 	/**
 	 * @var array Data (key, value)
 	 */
-	private $data = array();
+	protected $data = array();
 
 	/**
 	 * Init
@@ -51,8 +51,7 @@ class ArrayList implements \ArrayAccess, \Countable {
 	public function get($key) {
 		if ($this->offsetExists($key)) {
 			return $this->data[$key];
-		}
-		else
+		} else
 			throw new \Exception("Key $key doesn't exists.");
 	}
 
@@ -93,7 +92,7 @@ class ArrayList implements \ArrayAccess, \Countable {
 	public function isEmpty() {
 		return empty($this->data);
 	}
-	
+
 	/**
 	 * Clear all data	 
 	 */

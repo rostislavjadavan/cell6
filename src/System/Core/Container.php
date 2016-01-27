@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Container
  *
@@ -9,6 +10,7 @@
 namespace System\Core;
 
 class Container {
+
 	private static $storage = array();
 
 	public static function add($key, $value) {
@@ -21,7 +23,7 @@ class Container {
 		}
 		throw new SystemException("Unable to found '$key'");
 	}
-	
+
 	public static function build($className, $params = array()) {
 		$callParams = array();
 		$r = new \ReflectionClass($className);
@@ -30,19 +32,18 @@ class Container {
 		if ($constructor == false) {
 			return $r->newInstanceArgs();
 		}
-				
+
 		foreach ($constructor->getParameters() as $param) {
 			$name = $param->getName();
-			
-			if (array_key_exists($name, self::$storage)) {
+
+			if (array_key_exists($name, $params)) {
+				$callParams[$name] = $params[$name];
+			} else if (array_key_exists($name, self::$storage)) {
 				if (is_callable(self::$storage[$name])) {
 					$callParams[$name] = call_user_func(self::$storage[$name]);
-				}
-				else {
+				} else {
 					$callParams[$name] = self::$storage[$name];
 				}
-			} elseif (array_key_exists($name, $params)) {
-				$callParams[$name] = $params[$name];
 			} else {
 				if ($param->getClass() == null) {
 					if ($param->isDefaultValueAvailable()) {
@@ -54,7 +55,7 @@ class Container {
 					$callParams[$name] = $param->getClass()->newInstance();
 				}
 			}
-		}		
+		}
 
 		return $r->newInstanceArgs($callParams);
 	}
@@ -68,4 +69,5 @@ class Container {
 	public static function getStorage() {
 		return self::$storage;
 	}
+
 }

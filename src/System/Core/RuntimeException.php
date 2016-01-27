@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Runtime Exception
  *
@@ -9,5 +10,5 @@
 namespace System\Core;
 
 class RuntimeException extends SystemException {
-
+	
 }

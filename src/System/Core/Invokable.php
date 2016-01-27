@@ -76,7 +76,7 @@ class Invokable {
 	 * @return Class instance
 	 */
 	public function getInstance() {
-		if ($this->classInstance == null) {			
+		if ($this->classInstance == null) {
 			$this->classInstance = \System\Core\Container::build($this->class);
 		}
 
@@ -93,8 +93,8 @@ class Invokable {
 		$rm = new \ReflectionMethod($this->class, $this->method);
 
 		// Merge params
-		$tmpParams = array_merge($this->params, $params);			
-		
+		$tmpParams = array_merge($this->params, $params);
+
 		// Intersect injected params with called function params
 		$args = array();
 		foreach ($rm->getParameters() as $rp) {
@@ -109,5 +109,6 @@ class Invokable {
 
 		// Invoke class and return reponse
 		return $rm->invokeArgs($this->getInstance(), $args);
-	}	
+	}
+
 }

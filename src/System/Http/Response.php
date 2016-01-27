@@ -37,7 +37,7 @@ class Response {
 	 * @param string Content
 	 * @param int Response code
 	 */
-	public function __construct($content = '', $code = 200) {		
+	public function __construct($content = '', $code = 200) {
 		$this->setCode($code);
 		$this->setContent($content);
 	}
