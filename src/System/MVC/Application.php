@@ -29,7 +29,7 @@ class Application {
 		}
 
 		// Send response to browser
-		$this->sendSytemHeaders();
+		$this->sendSystemHeaders();
 		if ($response instanceof \System\Http\Response) {
 			$response->sendHeaders();
 			$response->sendContent();
@@ -52,7 +52,7 @@ class Application {
 		}
 	}
 
-	protected function sendSytemHeaders() {
+	protected function sendSystemHeaders() {
 		header('X-System: ' . SYSNAME . '_' . SYSVER);
 	}
 
