@@ -49,8 +49,7 @@ class Response {
 	 */
 	public function setCode($code) {
 		$this->code = $code;
-		//$this->protocol = $this->request->getProtocol();
-		$this->protocol = 'HTTP 1.1';
+		$this->protocol = \System\Core\Container::get('request')->getProtocol();		
 		$this->text = $this->getResponseText();
 	}
 
