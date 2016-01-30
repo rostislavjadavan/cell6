@@ -34,6 +34,11 @@ class DevController extends \System\MVC\Controller {
 		$out[] = $this->db->select('users')->fetchClasses('\Dev\UserModel');
 		$out[] = $this->db->select('users')->where('id', 2)->fetchClass('\Dev\UserModel');
 		
+		$this->db->update('users')->where('id >', 2)->values(array(
+			'status' => 1,
+			'kokot' => 'NEJVETSI'
+		))->exec();
+		
 		$this->db->update('users')->where('id', 2)->values(array(
 			'status' => 0,
 			'kokot' => 'NEJVETSI'

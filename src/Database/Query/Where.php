@@ -20,19 +20,22 @@ abstract class Where {
 	public function __construct($table, \Database\DB $db) {
 		$this->table = $table;
 		$this->db = $db;
-	}
+	}	
 
-	public function where($column, $value, $op = '=') {
+	public function where($columnAndOp, $value) {
+		list($column, $op) = $this->extractColumnAndOp($columnAndOp);
 		$this->whereParams[] = array('' => array($column, $op, $value));
 		return $this;
 	}
 
-	public function andWhere($column, $value, $op = '=') {
+	public function andWhere($columnAndOp, $value) {
+		list($column, $op) = $this->extractColumnAndOp($columnAndOp);
 		$this->whereParams[] = array('AND' => array($column, $op, $value));
 		return $this;
 	}
 
-	public function orWhere($column, $value, $op = '=') {
+	public function orWhere($columnAndOp, $value) {
+		list($column, $op) = $this->extractColumnAndOp($columnAndOp);
 		$this->whereParams[] = array('OR' => array($column, $op, $value));
 		return $this;
 	}
@@ -164,4 +167,11 @@ abstract class Where {
 		return $this;
 	}
 
+	private function extractColumnAndOp($input) {
+		preg_match('$([a-z0-9_-]+)[\s]*([<>=]*)$', $input, $m);
+		if (empty($m[1])) {
+			throw new \Exception('QUERY: Invalid or empty column');
+		}
+		return array($m[1], !empty($m[2]) ? $m[2] : '=');
+	}
 }

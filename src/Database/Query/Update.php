@@ -30,11 +30,6 @@ class Update extends Where {
 			$mode = Update::MODE_SAFE;
 		}
 
-		// Safe mode limit
-		if ($mode == Update::MODE_SAFE && is_null($this->limit)) {
-			$this->limit(1);
-		}
-
 		// Update
 		$sql = "UPDATE `{$this->table}`";
 
