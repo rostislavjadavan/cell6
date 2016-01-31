@@ -67,10 +67,19 @@ class Route {
 		if ($this->uri === null) {
 			return false;
 		}
+		
+		// Check http verb
+		if (array_key_exists('requestMethod', $this->params)) {
+			$request = \System\Core\Container::get('request');
+			if ($request->getMethod() != $this->params['requestMethod']) {
+				return false;
+			}
+		}
 
-		$uri = trim($uri, '/');
+		$uriTrimmed = trim($uri, '/');
 
-		if (!preg_match($this->routeRegexp, $uri, $matches)) {
+		$matches = array();
+		if (!preg_match($this->routeRegexp, $uriTrimmed, $matches)) {
 			return false;
 		}
 
@@ -79,7 +88,7 @@ class Route {
 			if (is_int($key)) {
 				continue;
 			}
-
+			
 			$params[$key] = $value;
 		}
 
@@ -134,8 +143,9 @@ class Route {
 					}
 
 					// Add default parameter to this result
-					if (isset($defaults[$param]))
+					if (isset($defaults[$param])) {
 						return $defaults[$param];
+					}
 
 					$missing[] = $param;
 				}
@@ -151,7 +161,7 @@ class Route {
 			}, $portion);
 
 			if ($required && $missing) {
-				throw new \Exception('Required route parameter not passed: ' . reset($missing));
+				throw new \Exception('ROUTE: Required route parameter not passed: ' . reset($missing));
 			}
 
 			return array($result, $required);

@@ -6,7 +6,7 @@
  * @author spool
  */
 
-namespace Core\Utils;
+namespace System\Utils;
 
 class Filesystem {
 

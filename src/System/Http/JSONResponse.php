@@ -23,7 +23,7 @@ class JSONResponse extends Response {
 	 * Send output. Transform to JSON format.	 
 	 */
 	public function sendContent() {
-		$json = new \Core\Utils\JSON();
+		$json = new \System\Utils\JSON();
 		echo $json->encode($this->content);
 	}
 
