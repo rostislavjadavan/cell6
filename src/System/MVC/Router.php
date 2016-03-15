@@ -30,6 +30,10 @@ class Router {
 		}
 		return $this->routes[$name];
 	}
+	
+	public function getAll() {
+		return $this->routes;
+	}
 
 	public function remove($name) {
 		unset($this->routes[$name]);

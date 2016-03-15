@@ -99,7 +99,7 @@ class View {
 	public function render() {
 		ob_start();
 		extract($this->params);
-		echo eval('?>' . preg_replace("/;*\s*\?>/", "; ?>", str_replace('<?=', '<?php echo ', $this->content)) . '<?php ');
+		echo eval('?>' . preg_replace("/;*\s*\?>/", "; ?>", str_replace('<?=', '<?php echo ', $this->translateCommonVars($this->content))) . '<?php ');
 		$content = ob_get_contents();
 		ob_end_clean();
 
@@ -115,4 +115,14 @@ class View {
 		return $this->render();
 	}
 
+	
+	protected function translateCommonVars($content) {
+		$baseUrl = \System\Core\Container::get('request')->getBaseUrl();
+		$dict = array(
+			'{BASEURL}' => $baseUrl,
+			'{PUBURL}' => $baseUrl.PUBDIR,
+			'{ASSESTSURL}' => $baseUrl.SYSDIR.US.'assets'
+		);
+		return strtr($content, $dict);
+	}
 }

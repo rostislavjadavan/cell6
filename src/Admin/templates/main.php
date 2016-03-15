@@ -3,14 +3,16 @@
 	<head>
 		<meta charset="utf-8">
 		<meta http-equiv="X-UA-Compatible" content="IE=edge">
-		<meta name="viewport" content="width=device-width, initial-scale=1">				
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="description" content="">
+		<meta name="author" content="">
+		<link rel="icon" href="../../favicon.ico">
 
-		<title><?php echo $pageTitle ?></title>
-		
-		<link href="<?php echo $baseUrl ?>public/css/bootstrap.min.css" rel="stylesheet">
-		<link href="<?php echo $baseUrl ?>public/css/bootstrap-theme.min.css" rel="stylesheet">
-		<link href="<?php echo $baseUrl ?>public/css/main.css" rel="stylesheet">
-		
+		<title><?php echo isset($pageTitle) ? $pageTitle : 'notitle' ?></title>
+
+		<link href="{ASSESTSURL}/bootstrap.min.css" rel="stylesheet">
+		<link href="{ASSESTSURL}/admin.css" rel="stylesheet">
+
 		<!--[if lt IE 9]>
 		  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
@@ -48,33 +50,20 @@
 			<div class="row">
 				<div class="col-sm-3 col-md-2 sidebar">
 					<ul class="nav nav-sidebar">
-						<li class="active"><a href="#">Overview <span class="sr-only">(current)</span></a></li>
-						<li><a href="#">Reports</a></li>
-						<li><a href="#">Analytics</a></li>
-						<li><a href="#">Export</a></li>
-					</ul>
-					<ul class="nav nav-sidebar">
-						<li><a href="">Nav item</a></li>
-						<li><a href="">Nav item again</a></li>
-						<li><a href="">One more nav</a></li>
-						<li><a href="">Another nav item</a></li>
-						<li><a href="">More navigation</a></li>
-					</ul>
-					<ul class="nav nav-sidebar">
-						<li><a href="">Nav item again</a></li>
-						<li><a href="">One more nav</a></li>
-						<li><a href="">Another nav item</a></li>
+						<li class="active"><a href="#">Item 1 <span class="sr-only">(current)</span></a></li>
+						<li><a href="#">Item 2</a></li>
+						<li><a href="#">Item 3</a></li>
+						<li><a href="#">Item 4</a></li>
 					</ul>
 				</div>
 				<div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
-					<h1 class="page-header">Dashboard</h1>
-
-										
+					<?php echo $content ?>
 				</div>
 			</div>
 		</div>
-		
-		<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-		<script src="<?php echo $baseUrl?>public/js/bootstrap.min.js"></script>		
+
+
+		<script src="{ASSESTSURL}/jquery-1.12.1.min.js"></script>
+		<script src="{ASSESTSURL}/bootstrap.min.js"></script>
 	</body>
 </html>
