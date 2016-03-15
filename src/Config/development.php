@@ -18,6 +18,7 @@ $router->set('404', new \System\MVC\Route(array('action' => '\Dev\DevController#
 $router->set('500', new \System\MVC\Route(array('action' => '\Dev\DevController#error500')));
 
 $router->set('admin', new \System\MVC\Route(array('uri' => 'admin', 'action' => '\Admin\DevController#index')));
+$router->set('admin/api', new \System\REST\RESTRoute(array('uri' => 'admin-api', 'class' => '\Admin\ApiController')));
 
 $router->set('api', new \System\REST\RESTRoute(array('uri' => 'api', 'class' => '\Dev\RESTController')));
 
