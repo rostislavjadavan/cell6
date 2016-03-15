@@ -5,7 +5,7 @@
  * 
  */
 \System\Core\Container::buildAndAdd('db', '\Database\DB', array(
-	'dsn' => 'mysql:host=localhost;dbname=test', 'username' => 'root', 'password' => 'root'
+	'dsn' => 'mysql:host=localhost;dbname=cell6_test', 'username' => 'root', 'password' => 'root'
 ));
 
 /**

@@ -31,6 +31,7 @@ class DevController extends \System\MVC\Controller {
 
 	public function database() {
 		$out[] = $this->db->select('users')->fetchAll();
+		/*
 		$out[] = $this->db->select('users')->fetchClasses('\Dev\UserModel');
 		$out[] = $this->db->select('users')->where('id', 2)->fetchClass('\Dev\UserModel');
 		
@@ -52,7 +53,7 @@ class DevController extends \System\MVC\Controller {
 		))->exec();
 		
 		$this->db->delete('users')->where('email', 'user@pohon.cz')->exec();
-		
+		*/
 		$out[] = $this->db->getQueryLog();
 		
 		return '<pre>'.print_r($out, true).'</pre>';		
