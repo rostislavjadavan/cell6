@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Column Text
+ * Column Button
  *
  * @author spool
  */
@@ -17,11 +17,11 @@ class ColumnButton extends ColumnText {
 	const BTN_WARNING = "btn btn-warning";
 	const BTN_DANGER = "btn btn-danger";
 	
-	protected $link = "";
-	protected $class = BTN_DEFAULT;
+	protected $id = "";
+	protected $class = self::BTN_DEFAULT;
 
-	public function setLink($link) {
-		$this->link = $link;
+	public function setId($id) {
+		$this->id = $id;
 		return $this;
 	}
 
@@ -31,6 +31,6 @@ class ColumnButton extends ColumnText {
 	}
 	
 	public function render($row = array()) {
-		return '<button id="'.$this->id.'" type="button" class="'.$this->class.'">'.$this->parsePattern($this->text, $row).'</button>';
+		return '<button id="'.$this->parsePattern($this->id, $row).'" type="button" class="'.$this->class.'">'.$this->parsePattern($this->text, $row).'</button>';
 	}
 }

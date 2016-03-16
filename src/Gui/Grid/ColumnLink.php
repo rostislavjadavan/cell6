@@ -8,22 +8,17 @@
 
 namespace Gui\Grid;
 
-class ColumnLink extends ColumnText {
+class ColumnLink extends ColumnButton {
 	
-	protected $link = "";
-	protected $class = "";
+	protected $class = '';
+	protected $link = "#";
 
 	public function setLink($link) {
 		$this->link = $link;
 		return $this;
 	}
-
-	public function setClass($class) {
-		$this->class = $class;
-		return $this;
-	}
 	
 	public function render($row = array()) {
-		return '<a id="'.$this->id.'" href="'.$this->link.'" class="'.$this->class.'">'.$this->parsePattern($this->text, $row).'</a>';
+		return '<a id="'.$this->parsePattern($this->id, $row).'" href="'.$this->parsePattern($this->link, $row).'" class="'.$this->class.'">'.$this->parsePattern($this->text, $row).'</a>';
 	}
 }

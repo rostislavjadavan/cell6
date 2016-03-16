@@ -9,12 +9,16 @@
 namespace Gui\Grid;
 
 class ColumnText {
-	protected $id = null;
+	protected $title = '';
 	protected $text = '';
 	
-	public function __construct($id, $text) {
-		$this->id = $id;
+	public function __construct($title, $text) {
+		$this->title = $title;
 		$this->text = $text;
+	}
+	
+	public function getTitle() {
+		return $this->title;
 	}
 
 	public function render($row = array()) {
