@@ -6,9 +6,9 @@
  * @author spool
  */
 
-namespace Gui;
+namespace Gui\Data;
 
-class DataSourceArray {
+class DataSourceArray implements DataSourceInterface {
 	protected $data = array();
 
 	public function __construct(array $data) {

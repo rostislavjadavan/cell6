@@ -6,9 +6,9 @@
  * @author spool
  */
 
-namespace Gui;
+namespace Gui\Data;
 
-class DataSourceDatabase {
+class DataSourceDatabase implements DataSourceInterface {
 
 	protected $select = null;
 
