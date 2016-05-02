@@ -151,11 +151,11 @@ class Request {
 	 */
 	public function getQuery($key = null) {
 		if ($key == null) {
-			return $this->get;
+			return $this->query;
 		}
 
-		if ($this->get->is($key)) {
-			return $this->get->get($key);
+		if ($this->query->is($key)) {
+			return $this->query->get($key);
 		}
 
 		return null;

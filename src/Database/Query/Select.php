@@ -97,6 +97,11 @@ class Select extends Where {
 
 		return $statement->fetchAll(\PDO::FETCH_CLASS | \PDO::FETCH_PROPS_LATE, $className);
 	}
+	
+	public function fetchCount($alias = 'count') {
+		$this->count($alias);
+		return $this->fetch()[$alias];
+	}
 
 	public function __toString() {
 		return $this->build();
