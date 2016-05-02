@@ -99,7 +99,7 @@ class Response {
 	 * Return content
 	 */
 	public function __toString() {
-		return $this->getOutput();
+		return $this->getContent();
 	}
 
 	/**

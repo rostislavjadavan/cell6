@@ -12,6 +12,7 @@ namespace System\MVC;
 class Router {
 
 	protected $routes = array();
+	protected $currentRouteName = null;
 	protected $currentRoute = null;
 	protected $currentRouteResult = null;
 	protected $request = null;
@@ -75,7 +76,11 @@ class Router {
 	public function getCurrentRoute() {
 		return $this->currentRoute;
 	}
-
+	
+	function getCurrentRouteName() {
+		return $this->currentRouteName;
+	}
+	
 	public function getCurrentUri() {
 		return $this->currentRoute->createUri($this->currentRouteResult);
 	}
@@ -90,6 +95,7 @@ class Router {
 
 			if ($result !== false) {
 				$this->currentRoute = $route;
+				$this->currentRouteName = $name;
 				$this->currentRouteResult = $result;
 				return $route;
 			}

@@ -27,4 +27,11 @@ class JSONResponse extends Response {
 		echo $json->encode($this->content);
 	}
 
+	/**
+	 * Get output. Transform to JSON format.	 
+	 */
+	public function getContent() {
+		$json = new \System\Utils\JSON();
+		return $json->encode($this->content);
+	}
 }
