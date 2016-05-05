@@ -64,6 +64,9 @@
 
 
 		<script src="{ASSESTSURL}/jquery-1.12.1.min.js"></script>
+		<script src="{ASSESTSURL}/jquery.json.min.js"></script>
+		<script src="{ASSESTSURL}/simplestorage.js"></script>
 		<script src="{ASSESTSURL}/bootstrap.min.js"></script>
+		<script src="{ASSESTSURL}/admin.js"></script>
 	</body>
 </html>
