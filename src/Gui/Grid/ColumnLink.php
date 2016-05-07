@@ -12,6 +12,7 @@ class ColumnLink extends ColumnButton implements ColumnInterface {
 
 	protected $class = '';
 	protected $link = "#";
+	protected $searchable = false;
 
 	public function setLink($link) {
 		$this->link = $link;

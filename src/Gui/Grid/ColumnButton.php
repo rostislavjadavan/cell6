@@ -19,6 +19,7 @@ class ColumnButton extends ColumnText implements ColumnInterface {
 
 	protected $id = "";
 	protected $class = self::BTN_DEFAULT;
+	protected $searchable = false;
 
 	public function setId($id) {
 		$this->id = $id;

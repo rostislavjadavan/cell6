@@ -9,6 +9,7 @@ function Grid(el) {
     this.gridUid = 'cell6-grid-' + this.uid;
     this.url = $(el).data('url');
     this.columns = $(el).data('columns');
+    this.searchIndexes = $(el).data('search-indexes');
     this.perPage = 10;
     this.data = [];
 
@@ -115,7 +116,7 @@ Grid.prototype.getData = function() {
     var counter = 0;
     for (var row = 0; row < this.data.length; row++) {        
         for (var col = 0; col < this.data[row].length; col++) {
-            if (String(this.data[row][col]).toLowerCase().indexOf(this.search.toLowerCase()) > -1 ) {
+            if ($.inArray(col, this.searchIndexes) > -1 && String(this.data[row][col]).toLowerCase().indexOf(this.search.toLowerCase()) > -1 ) {
                 data[counter] = this.data[row];                
                 counter++;
             }
