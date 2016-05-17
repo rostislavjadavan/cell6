@@ -39,7 +39,7 @@ class DB {
 	 * @param type $charset
 	 * @throws \Exception
 	 */
-	public function __construct($dsn, $username, $password, $charset = 'utf-8') {
+	public function __construct($dsn, $username, $password, $charset = 'utf8') {
 		try {
 			$this->pdo = new \PDO($dsn, $username, $password);
 			$this->pdo->query('SET NAMES ' . $charset);

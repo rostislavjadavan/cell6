@@ -20,8 +20,9 @@ class JSON {
 	public function encode($data) {
 		$result = json_encode($data);
 
-		if ($result == FALSE)
+		if ($result == FALSE) {
 			throw new \Exception('JSON Encode Error:' . $this->getErrorMessage());
+		}
 
 		return $result;
 	}
