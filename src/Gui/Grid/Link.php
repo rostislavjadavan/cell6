@@ -8,7 +8,7 @@
 
 namespace Gui\Grid;
 
-class ColumnLink extends ColumnButton implements ColumnInterface {
+class Link extends Button implements ColumnInterface {
 
 	protected $class = '';
 	protected $link = "#";

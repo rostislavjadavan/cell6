@@ -19,6 +19,7 @@ $router->set('500', new \System\MVC\Route(array('action' => '\Dev\DevController#
 
 $router->set('admin', new \System\MVC\Route(array('uri' => 'admin', 'action' => '\Admin\DevController#index')));
 $router->set('admin-grid', new \System\MVC\Route(array('uri' => 'admin/grid', 'action' => '\Admin\DevController#grid')));
+$router->set('admin-form', new \System\MVC\Route(array('uri' => 'admin/form', 'action' => '\Admin\DevController#form')));
 
 $router->set('admin-api-griddata', new \System\REST\RESTRoute(array('uri' => 'admin/api/griddata', 'class' => '\Admin\Api\GridDataController')));
 

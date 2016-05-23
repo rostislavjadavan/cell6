@@ -8,7 +8,7 @@
 
 namespace Gui\Grid;
 
-class ColumnText implements ColumnInterface {
+class Text implements ColumnInterface {
 
 	protected $title = '';
 	protected $text = '';

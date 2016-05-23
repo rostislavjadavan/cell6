@@ -9,8 +9,7 @@ class Grid {
 	protected $uid = null;
 	protected $data = null;
 	protected $templateName = 'Gui\Grid\views\default';
-	protected $columns = array();
-	protected $routeName;
+	protected $columns = array();	
 
 	public function __construct($uid, Data\DataSourceInterface $data) {
 		$this->uid = $uid;

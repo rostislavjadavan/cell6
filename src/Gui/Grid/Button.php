@@ -8,7 +8,7 @@
 
 namespace Gui\Grid;
 
-class ColumnButton extends ColumnText implements ColumnInterface {
+class Button extends Text implements ColumnInterface {
 
 	const BTN_DEFAULT = "btn btn-default";
 	const BTN_PRIMARY = "btn btn-primary";
