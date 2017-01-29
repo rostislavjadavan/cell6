@@ -1,2 +1,4 @@
+vendor/
 public/
 *.zip
+composer.lock

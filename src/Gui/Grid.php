@@ -9,7 +9,7 @@ class Grid {
 	protected $uid = null;
 	protected $data = null;
 	protected $templateName = 'Gui\Grid\views\default';
-	protected $columns = array();	
+	protected $columns = array();
 
 	public function __construct($uid, Data\DataSourceInterface $data) {
 		$this->uid = $uid;
@@ -24,11 +24,12 @@ class Grid {
 	public function render() {
 		$request = \System\Core\Container::get('request');
 		if ($request->isAjax() && $request->getQuery(self::GRID_UID_PARAM) == $this->uid) {
-			$response = \System\Core\Container::build('\System\Http\JsonResponse', array(
+			$response = \System\Core\Container::build('\System\Http\JSONResponse', array(
 						'content' => $this->getData(), 'code' => 200
 			));
 			$response->sendHeaders();
 			$response->sendContent();
+			$re
 			die();
 		}
 

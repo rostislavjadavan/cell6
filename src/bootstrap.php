@@ -1,7 +1,7 @@
 <?php
 
 /**
- * 
+ *
  * Setup
  *
  * @author spool
@@ -14,6 +14,7 @@ define('CONFIGPATH', SYSPATH . DS . 'Config');
  * Register autoloader
  */
 include(COREPATH . DIRECTORY_SEPARATOR . 'ClassAutoLoader.php');
+include(VENDORDIR . DIRECTORY_SEPARATOR . 'autoload.php');
 
 $loader = new \System\Core\ClassAutoLoader();
 $loader->registerAutoloader();
