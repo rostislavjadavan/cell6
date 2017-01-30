@@ -17,7 +17,7 @@ class ArrayList implements \ArrayAccess, \Countable {
 
 	/**
 	 * Init
-	 * 
+	 *
 	 * @param array Initial data
 	 */
 	public function __construct($data = array()) {
@@ -35,7 +35,7 @@ class ArrayList implements \ArrayAccess, \Countable {
 
 	/**
 	 * Add value to list
-	 * 
+	 *
 	 * @param mixed Value
 	 */
 	public function add($value) {
@@ -80,7 +80,7 @@ class ArrayList implements \ArrayAccess, \Countable {
 	 * @param string Key
 	 * @return bool TRUE if key is in list
 	 */
-	public function is($key) {
+	public function is($key) {		
 		return array_key_exists($key, $this->data);
 	}
 
@@ -94,7 +94,7 @@ class ArrayList implements \ArrayAccess, \Countable {
 	}
 
 	/**
-	 * Clear all data	 
+	 * Clear all data
 	 */
 	public function clear() {
 		$this->data = array();
@@ -142,7 +142,7 @@ class ArrayList implements \ArrayAccess, \Countable {
 	/**
 	 * Unset value
 	 *
-	 * @param string Key	 
+	 * @param string Key
 	 */
 	public function offsetUnset($offset) {
 		unset($this->data[$offset]);

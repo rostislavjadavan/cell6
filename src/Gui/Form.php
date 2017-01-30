@@ -14,6 +14,7 @@ class Form {
 
 	public function add($formControl) {
 		$this->controls[] = $formControl;
+		return $formControl;		
 	}
 
 	public function render() {

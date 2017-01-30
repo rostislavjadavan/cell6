@@ -1,4 +1,4 @@
-<form>
+<form method="post">
     <?php foreach($controls as $control): ?>
         <div class="form-group">
             <?php echo $control->render() ?>

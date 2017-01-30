@@ -21,8 +21,9 @@ abstract class Base {
 
     protected function loadPost() {
         $request = \System\Core\Container::get("request");
-		if ($request->isPost() && $request->getPost($this->name))
-			$this->value = $request->getPost($this->name);
+		if ($request->isPost() && $request->getPost($this->id)) {
+			$this->value = $request->getPost($this->id);
+		}
 	}
 
 	public function getId() {
@@ -84,16 +85,20 @@ abstract class Base {
 		return $this->isSubmit;
 	}
 
-	public function render() {
-		$view = \System\MVC\View::load($this->template);
-		$view->setParams(array(
+	protected function getViewParams() {
+		return array(
 			'id' => $this->id,
 			'label' => $this->label,
 			'class' => $this->class,
 			'note' => $this->note,
 			'size' => $this->size,
 			'value' => $this->value
-		));
+		);
+	}
+
+	public function render() {
+		$view = \System\MVC\View::load($this->template);
+		$view->setParams($this->getViewParams());
 		return $view->render();
 	}
 

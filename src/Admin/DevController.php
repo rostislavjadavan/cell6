@@ -47,8 +47,11 @@ class DevController extends \System\MVC\Controller {
 	public function form() {
 		$form = new \Gui\Form('form');
 		$form->add(new \Gui\Form\Text("text1", "Text1"));
+		$form->add(new \Gui\Form\Date("date1", "Date1"))->setToday();
 		$form->add(new \Gui\Form\Text("text2", "Text2"));
-		$form->add(new \Gui\Form\Date("date1", "Date1"));
+		$form->add(new \Gui\Form\Password("password1", "Password1"));
+		$form->add(new \Gui\Form\TextArea("textarea1", "TextArea1"));
+		$form->add(new \Gui\Form\Select("select1", "Select1"))->setOptions(array("yes" => "Yes", "no" => "No"));
 
 		$data = array(
 			'pageTitle' => 'Dev',
