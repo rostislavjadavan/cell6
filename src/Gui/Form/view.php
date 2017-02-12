@@ -4,6 +4,7 @@
             <?php echo $control->render() ?>
         </div>
     <?php endforeach ?>
-
-  <button type="submit" class="btn btn-default">Submit</button>
+    <?php foreach($buttons as $button): ?>
+        <?php echo $button->render() ?>        
+    <?php endforeach ?>
 </form>

@@ -52,6 +52,7 @@ class DevController extends \System\MVC\Controller {
 		$form->add(new \Gui\Form\Password("password1", "Password1"));
 		$form->add(new \Gui\Form\TextArea("textarea1", "TextArea1"));
 		$form->add(new \Gui\Form\Select("select1", "Select1"))->setOptions(array("yes" => "Yes", "no" => "No"));
+		$form->add(new \Gui\Form\Button("submit", "Save"));
 
 		$data = array(
 			'pageTitle' => 'Dev',

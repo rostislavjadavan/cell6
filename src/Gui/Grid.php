@@ -8,7 +8,7 @@ class Grid {
 
 	protected $uid = null;
 	protected $data = null;
-	protected $templateName = 'Gui\Grid\views\default';
+	protected $templateName = 'Gui\Grid\view';
 	protected $columns = array();
 
 	public function __construct($uid, Data\DataSourceInterface $data) {
@@ -29,8 +29,7 @@ class Grid {
 			));
 			$response->sendHeaders();
 			$response->sendContent();
-			$re
-			die();
+			die();		
 		}
 
 		$template = \System\MVC\View::load('Gui\Grid\view', array(

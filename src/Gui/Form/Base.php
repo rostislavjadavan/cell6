@@ -10,12 +10,15 @@ abstract class Base {
 	protected $note;
 	protected $value = null;
     protected $template = null;
-	protected $isSubmit = false;
 
 	public function __construct($id, $label = null, $class = null) {
 		$this->id = $id;
-        $this->label = $label;
-        $this->class = $class;
+		if ($label != null) {
+			$this->label = $label;
+		}
+		if ($class != null) {
+			$this->class = $class;
+		}
 		$this->loadPost();
 	}
 
@@ -79,10 +82,6 @@ abstract class Base {
 		$this->value = $defaultValue;
 		$this->loadPost();
 		return $this;
-	}
-
-	public function isSubmit() {
-		return $this->isSubmit;
 	}
 
 	protected function getViewParams() {
