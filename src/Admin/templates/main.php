@@ -11,12 +11,20 @@
 		<title><?php echo isset($pageTitle) ? $pageTitle : 'notitle' ?></title>
 
 		<link href="{ASSESTSURL}/bootstrap.min.css" rel="stylesheet">
+		<link href="{ASSESTSURL}/bootstrap-datetimepicker.min.css" rel="stylesheet">
 		<link href="{ASSESTSURL}/admin.css" rel="stylesheet">
 
 		<!--[if lt IE 9]>
 		  <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
 		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 		<![endif]-->
+		<script src="{ASSESTSURL}/jquery-1.12.1.min.js"></script>
+		<script src="{ASSESTSURL}/jquery.json.min.js"></script>
+		<script src="{ASSESTSURL}/simplestorage.js"></script>
+		<script src="{ASSESTSURL}/bootstrap.min.js"></script>
+		<script src="{ASSESTSURL}/moment.min.js"></script>
+		<script src="{ASSESTSURL}/bootstrap-datetimepicker.min.js"></script>
+		<script src="{ASSESTSURL}/admin.js"></script>
 	</head>
 
 	<body>
@@ -61,12 +69,5 @@
 				</div>
 			</div>
 		</div>
-
-
-		<script src="{ASSESTSURL}/jquery-1.12.1.min.js"></script>
-		<script src="{ASSESTSURL}/jquery.json.min.js"></script>
-		<script src="{ASSESTSURL}/simplestorage.js"></script>
-		<script src="{ASSESTSURL}/bootstrap.min.js"></script>
-		<script src="{ASSESTSURL}/admin.js"></script>
 	</body>
 </html>

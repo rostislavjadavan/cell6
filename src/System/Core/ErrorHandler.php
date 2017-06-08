@@ -45,22 +45,22 @@ class ErrorHandler {
 
 	/*
 	 * Exception handler
-	 * 
+	 *
 	 * Called on uncaught exception
-	 * 
+	 *
 	 * @param Exception Uncaught exception
 	 */
 
-	public function exceptionHandler(\Exception $e) {
+	public function exceptionHandler($e) {
 		$this->renderException($e);
 		return TRUE;
 	}
 
 	/**
 	 * Error handler
-	 * 
+	 *
 	 * Called when error happens.
-	 * 
+	 *
 	 * @param int Error type (E_ERROR, E_NOTICE etc.)
 	 * @param string Error message
 	 * @param string Path to file where error occurs
@@ -79,7 +79,7 @@ class ErrorHandler {
 
 	/**
 	 * Shutdown function
-	 * 
+	 *
 	 * Purpose is to catch fatal errors because it is not possible using
 	 * error handler.
 	 */
@@ -94,7 +94,7 @@ class ErrorHandler {
 		exit(1);
 	}
 
-	private function renderException(\Exception $exception) {
+	private function renderException($exception) {
 		$out = <<< EOD
 <html>
 	<head>
@@ -107,19 +107,19 @@ class ErrorHandler {
 			.error-message h2 { font-weight: normal; font-size: 19px }
 			.trace { margin: 11px 22px }
 			.trace pre { padding: 6px 11px; border: 1px solid #ddd }
-		</style>		
+		</style>
 	</head>
 	<body>
-		<div class="error-message">			
+		<div class="error-message">
 			<h1>ERROR {$exception->getCode()}: {$exception->getMessage()}</h1>
 			<h2>File {$exception->getFile()} on line {$exception->getLine()}.</h2>
-		</div>		
-		<div class="trace">			
+		</div>
+		<div class="trace">
 			<h3>Trace</h3>
-			<pre>{$exception->getTraceAsString()}</pre>		
-		</div>		
+			<pre>{$exception->getTraceAsString()}</pre>
+		</div>
 	</body>
-</html>				
+</html>
 EOD;
 		echo $out;
 	}

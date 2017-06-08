@@ -160,7 +160,9 @@ Grid.prototype.parsePattern = function (pattern, data) {
     return pattern;
 };
 
-$.each($(".grid"), function (index, value) {
-    var grid = new Grid(value);
-    grid.render();
+$(document).ready(function() {
+    $.each($(".grid"), function (index, value) {
+        var grid = new Grid(value);
+        grid.render();
+    });
 });
