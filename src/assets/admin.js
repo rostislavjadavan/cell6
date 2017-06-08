@@ -1,4 +1,4 @@
-String.prototype.replaceAll = function (find, replace) {
+    String.prototype.replaceAll = function (find, replace) {
     var str = this;
     return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
 };
@@ -41,6 +41,17 @@ function Grid(el) {
 
 Grid.prototype.render = function () {
     this.loadData();
+
+    $(this.element).find('.grid-search-input').keyup($.proxy(function() {
+        this.search = $(this.element).find('.grid-search-input').val();
+        if (this.search.length > 0) {
+            this.page = 0;
+            $(this.element).find('.grid-remove-button').show();
+        } else {
+            $(this.element).find('.grid-remove-button').hide();
+        }
+        this.processData();
+    }, this));
 };
 
 Grid.prototype.loadData = function () {
@@ -105,12 +116,12 @@ Grid.prototype.processData = function () {
         }, this));
     }, this));
 
-    $(this.element).find('.grid-search-button').click($.proxy(function () {
+    /*$(this.element).find('.grid-search-button').click($.proxy(function () {
         this.page = 0;
         this.search = $(this.element).find('.grid-search-input').val();
         $(this.element).find('.grid-remove-button').show();
         this.processData();
-    }, this));
+    }, this));*/
 
     $(this.element).find('.grid-remove-button').click($.proxy(function () {
         this.page = 0;
