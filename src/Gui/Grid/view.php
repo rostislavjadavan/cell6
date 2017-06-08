@@ -5,9 +5,6 @@
                 <div class="input-group col-md-12">
                     <input type="text" class="form-control input-lg grid-search-input" placeholder="Hledat..." />
                     <span class="input-group-btn">
-                        <!--<button class="btn btn-info btn-lg grid-search-button" type="button">
-                            <i class="glyphicon glyphicon-search"></i>
-                        </button>-->
 						<button class="btn btn-info btn-lg grid-remove-button" type="button">
                             <i class="glyphicon glyphicon-remove"></i>
                         </button>

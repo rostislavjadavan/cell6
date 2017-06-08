@@ -1,4 +1,4 @@
-    String.prototype.replaceAll = function (find, replace) {
+String.prototype.replaceAll = function (find, replace) {
     var str = this;
     return str.replace(new RegExp(find.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'g'), replace);
 };
@@ -115,13 +115,6 @@ Grid.prototype.processData = function () {
             event.preventDefault();
         }, this));
     }, this));
-
-    /*$(this.element).find('.grid-search-button').click($.proxy(function () {
-        this.page = 0;
-        this.search = $(this.element).find('.grid-search-input').val();
-        $(this.element).find('.grid-remove-button').show();
-        this.processData();
-    }, this));*/
 
     $(this.element).find('.grid-remove-button').click($.proxy(function () {
         this.page = 0;
