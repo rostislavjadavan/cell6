@@ -1,5 +1,13 @@
 {
+    "name": "rostislavjadavan/cell6",
+    "type": "project",
     "require": {
-        "monolog/monolog": "1.0.*"
-    }
+    },
+    "license": "Free",
+    "authors": [
+        {
+            "name": "Rostislav Jadavan",
+            "email": "rostislav.jadavan@gmail.com"
+        }
+    ]
 }
