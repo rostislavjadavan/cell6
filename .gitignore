@@ -1,6 +1,7 @@
 .idea/
-vendor/
 public/
 *.zip
 *.iml
 composer.lock
+
+/vendor/
