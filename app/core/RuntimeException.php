@@ -9,6 +9,6 @@
 
 namespace Core;
 
-class RuntimeException extends SystemException {
+class RuntimeException extends \Exception {
 	
 }

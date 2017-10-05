@@ -1,77 +1,43 @@
 <?php
 
-/**
- * Container
- *
- * @package Core
- * @author spool
- */
-
 namespace Core;
 
 class Container {
+    private $storage = array();
 
-	private static $storage = array();
+    public function make($className, $params = array()) {
+        $callParams = array();
+        $r = new \ReflectionClass($className);
 
-	public static function add($key, $value) {
-		self::$storage[$key] = $value;
-	}
+        $constructor = $r->getConstructor();
+        if ($constructor == false) {
+            return $r->newInstanceArgs();
+        }
 
-	public static function get($key) {
-		if (array_key_exists($key, self::$storage)) {
-			return self::$storage[$key];
-		}
+        foreach ($constructor->getParameters() as $param) {
+            $name = $param->getName();
 
-		echo '<pre>';
-		print_r(self::$storage);
+            if (array_key_exists($name, $params)) {
+                $callParams[$name] = $params[$name];
+            } else if (array_key_exists($name, $this->storage)) {
+                if (is_callable($this->storage[$name])) {
+                    $callParams[$name] = call_user_func($this->storage[$name]);
+                } else {
+                    $callParams[$name] = $this->storage[$name];
+                }
+            } else {
+                if ($param->getClass() == null) {
+                    if ($param->isDefaultValueAvailable()) {
+                        $callParams[$name] = $param->getDefaultValue();
+                    } else {
+                        throw new RuntimeException("Cannot inject '$name'. Unable to find key in container or create basic type.");
+                    }
+                } else {
+                    $callParams[$name] = $this->make($param->getClass());
+                }
+            }
+        }
 
-		throw new SystemException("Unable to found '$key'");
-	}
-
-	public static function build($className, $params = array()) {
-		$callParams = array();
-		$r = new \ReflectionClass($className);
-
-		$constructor = $r->getConstructor();
-		if ($constructor == false) {
-			return $r->newInstanceArgs();
-		}
-
-		foreach ($constructor->getParameters() as $param) {
-			$name = $param->getName();
-
-			if (array_key_exists($name, $params)) {
-				$callParams[$name] = $params[$name];
-			} else if (array_key_exists($name, self::$storage)) {
-				if (is_callable(self::$storage[$name])) {
-					$callParams[$name] = call_user_func(self::$storage[$name]);
-				} else {
-					$callParams[$name] = self::$storage[$name];
-				}
-			} else {
-				if ($param->getClass() == null) {
-					if ($param->isDefaultValueAvailable()) {
-						$callParams[$name] = $param->getDefaultValue();
-					} else {
-						throw new SystemException("Cannot inject '$name'. Unable to find key in container or create basic type.");
-					}
-				} else {
-					$callParams[$name] = $param->getClass()->newInstance();
-				}
-			}
-		}
-
-		return $r->newInstanceArgs($callParams);
-	}
-
-	public static function buildAndAdd($key, $className, $params = array()) {
-		$instance = self::build($className, $params);
-		self::add($key, $instance);
-		return $instance;
-	}
-
-	public static function getStorage() {
-		return self::$storage;
-	}
-
+        return $r->newInstanceArgs($callParams);
+    }
 }
