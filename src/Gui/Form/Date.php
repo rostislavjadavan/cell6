@@ -7,7 +7,7 @@ class Date extends Base {
 	protected $size = 1;
 
 	public function setToday() {
-		$this->setDefaultValue(date("Y/m/d"));
+		$this->setValue(date("Y/m/d"));
 		return $this;
 	}
 }

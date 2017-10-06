@@ -19,14 +19,6 @@ abstract class Base {
 		if ($class != null) {
 			$this->class = $class;
 		}
-		$this->loadPost();
-	}
-
-    protected function loadPost() {
-        $request = \System\Core\Container::get("request");
-		if ($request->isPost() && $request->getPost($this->id)) {
-			$this->value = $request->getPost($this->id);
-		}
 	}
 
 	public function getId() {
@@ -78,9 +70,8 @@ abstract class Base {
 		return $this->value;
 	}
 
-	public function setDefaultValue($defaultValue) {
+	public function setValue($defaultValue) {
 		$this->value = $defaultValue;
-		$this->loadPost();
 		return $this;
 	}
 

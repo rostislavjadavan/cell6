@@ -235,6 +235,24 @@ class Request {
 		}
 	}
 
+    /**
+     * Get Request Payload in Ajax request
+     *
+     * @return bool|string
+     */
+	public function getAjaxPayload() {
+        return file_get_contents('php://input');
+    }
+
+    /**
+     * Get Request JSON Payload in Ajax request
+     *
+     * @return bool|string
+     */
+    public function getAjaxPayloadJson() {
+        return json_decode(file_get_contents('php://input'));
+    }
+
 	/**
 	 * Return request url
 	 * 

@@ -4,7 +4,7 @@ namespace Gui;
 
 class Grid {
 
-	const GRID_UID_PARAM = 'griduid';
+	const GRID_UID_PARAM = 'grid-uid';
 
 	protected $uid = null;
 	protected $data = null;

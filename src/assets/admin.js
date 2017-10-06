@@ -153,9 +153,39 @@ Grid.prototype.parsePattern = function (pattern, data) {
     return pattern;
 };
 
+function Form(el) {
+    this.element = el;
+    this.uid = $(el).data('uid');
+}
+
+Form.prototype.render = function() {
+    var buttons = $(this.element).find('.form-button');
+    if (buttons !== undefined) {
+        buttons.click($.proxy(function(event) {
+            $.ajax({
+                type: "POST",
+                url: $(event.target).data('action-url'),
+                data: $(this.element).serialize(),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(data) {
+                    $(this.element).html(data.content);
+                },
+                failure: function(errMsg) {
+                    alert(errMsg);
+                }
+            });
+        }, this));
+    }
+}
+
 $(document).ready(function() {
     $.each($(".grid"), function (index, value) {
         var grid = new Grid(value);
         grid.render();
+    });
+    $.each($(".form"), function (index, value) {
+        var form = new Form(value);
+        form.render();
     });
 });

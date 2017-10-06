@@ -45,18 +45,27 @@ class DevController extends \System\MVC\Controller {
 	}
 
 	public function form() {
-		$form = new \Gui\Form('form');
+		$form = new \Gui\Form('form', array(
+		    'text1' => 'Text1 content',
+            'textarea1' => "Text Area 1 content"
+        ));
 		$form->add(new \Gui\Form\Text("text1", "Text1"));
 		$form->add(new \Gui\Form\Date("date1", "Date1"))->setToday();
 		$form->add(new \Gui\Form\Text("text2", "Text2"));
 		$form->add(new \Gui\Form\Password("password1", "Password1"));
 		$form->add(new \Gui\Form\TextArea("textarea1", "TextArea1"));
 		$form->add(new \Gui\Form\Select("select1", "Select1"))->setOptions(array("yes" => "Yes", "no" => "No"));
-		$form->add(new \Gui\Form\Button("submit", "Save"));
+		$form->add(new \Gui\Form\Button("save", "Save"));
+		$form->add(new \Gui\Form\Button("send", "Test send"));
+        $form->add(new \Gui\Form\Button("redirect", "Test redirect"));
+
+        $form->onClick('save', function($data) {
+            
+        });
 
 		$data = array(
 			'pageTitle' => 'Dev',
-			'out' => $form->render(),
+			'out' => $form->render()
 		);
 
 		return $this->template('\Admin\views\dev', '\Admin\templates\main', $data);
