@@ -5,7 +5,29 @@ namespace Core;
 class Container {
     private $storage = array();
 
+    public function bind($className, $value) {
+        if ($this->isClosure($value)) {
+            $this->storage[$className] = $value;
+        } else {
+            throw new RuntimeException("Provided class $className must be valid closure so container is able to create new instances");
+        }
+    }
+
+    public function instance($className, $value) {
+        $this->storage[$className] = $value;
+    }
+
+    public function singleton($className, $params = array()) {
+        $instance = $this->make($className, $params);
+        $this->storage[$className] = $instance;
+        return $instance;
+    }
+
     public function make($className, $params = array()) {
+        if (array_key_exists($className, $this->storage)) {
+            return $this->storage[$className];
+        }
+
         $callParams = array();
         $r = new \ReflectionClass($className);
 
@@ -17,27 +39,36 @@ class Container {
         foreach ($constructor->getParameters() as $param) {
             $name = $param->getName();
 
-            if (array_key_exists($name, $params)) {
-                $callParams[$name] = $params[$name];
-            } else if (array_key_exists($name, $this->storage)) {
-                if (is_callable($this->storage[$name])) {
-                    $callParams[$name] = call_user_func($this->storage[$name]);
+            if ($param->getType() == null) {
+                if (array_key_exists($name, $params)) {
+                    $callParams[$name] = $params[$name];
+                } elseif ($param->isDefaultValueAvailable()) {
+                    $callParams[$name] = $param->getDefaultValue();
                 } else {
-                    $callParams[$name] = $this->storage[$name];
+                    throw new RuntimeException("Cannot init '$name'. No value provided.");
                 }
             } else {
-                if ($param->getClass() == null) {
-                    if ($param->isDefaultValueAvailable()) {
-                        $callParams[$name] = $param->getDefaultValue();
+                $type = $param->getType()->__toString();
+
+                if (array_key_exists($type, $this->storage)) {
+                    if (is_callable($this->storage[$type])) {
+                        $callParams[$name] = call_user_func($this->storage[$type]);
                     } else {
-                        throw new RuntimeException("Cannot inject '$name'. Unable to find key in container or create basic type.");
+                        $callParams[$name] = $this->storage[$type];
                     }
                 } else {
-                    $callParams[$name] = $this->make($param->getClass());
+                    $callParams[$name] = $this->make($type);
+                }
+
+                if (!($callParams[$name] instanceof $type)) {
+                    throw new RuntimeException("Invalid injected type. Expected '$type', got '" . get_class($callParams[$name]) . "'");
                 }
             }
         }
-
         return $r->newInstanceArgs($callParams);
+    }
+
+    private function isClosure($t) {
+        return is_object($t) && ($t instanceof \Closure);
     }
 }
