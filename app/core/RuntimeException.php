@@ -1,14 +1,11 @@
 <?php
 
-/**
- * Runtime Exception
- *
- * @package Core
- * @author spool
- */
-
 namespace Core;
 
+/**
+ * Class RuntimeException
+ * @package Core
+ */
 class RuntimeException extends \Exception {
-	
+
 }

@@ -1,45 +1,47 @@
 <?php
 
 /**
- * 
+ *
  * Setup
  *
  * @author spool
  */
+define('DEBUG_MODE', true);
+define('PUBDIR', 'public');
+
 define('SYSPATH', dirname(__FILE__));
-define('COREPATH', SYSPATH . DS . 'core');
-define('VENDOR', 'vendor');
+define('COREPATH', SYSPATH . DIRECTORY_SEPARATOR . 'core');
+define('VENDOR', SYSPATH . DIRECTORY_SEPARATOR . 'vendor');
 
 /**
- * Register autoloader
+ * Create container, register autoloader and error handler
  */
 include(COREPATH . DIRECTORY_SEPARATOR . 'ClassAutoLoader.php');
+include(COREPATH . DIRECTORY_SEPARATOR . 'Container.php');
 
-$loader = new \Core\ClassAutoLoader();
+$container = new \Core\Container();
+
+$loader = $container->singleton("\Core\ClassAutoLoader");
 $loader->registerAutoloader();
 
-\Core\Container::add('loader', $loader);
-\Core\Container::add('request', new \Core\Request());
-
-/**
- * Register composer autoloader
- */
-include(VENDOR . DIRECTORY_SEPARATOR . 'autoload.php');
-
-/**
- * Error handler
- */
-$errorHandler = new \Core\ErrorHandler();
+$errorHandler = $container->singleton("\Core\ErrorHandler");
 $errorHandler->register(DEBUG_MODE);
+
+/**
+ * Register composer autoloader if available
+ */
+if (file_exists(VENDOR . DIRECTORY_SEPARATOR . 'autoload.php')) {
+    include(VENDOR . DIRECTORY_SEPARATOR . 'autoload.php');
+}
 
 /**
  * Configuration
  */
-require SYSPATH . DS . 'config.php';
+require SYSPATH . DIRECTORY_SEPARATOR . 'config.php';
 
 
 /**
  * Run application
  */
-$application = \Core\Container::build('\Core\Application');
+$application = $container->singleton('\Core\Application');
 $application->run();

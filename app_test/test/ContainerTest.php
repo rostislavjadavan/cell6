@@ -21,7 +21,7 @@ class ContainerTest {
         Assert::assertObjectNotNull("i1", $i1);
         Assert::assertObjectNotNull("i2", $i2);
         Assert::assertObjectNotNull("i3", $i3);
-        Assert::assertEqual("CT_Singleton::counter", 1, $i3->getCounter());
+        Assert::assertEquals("CT_Singleton::counter", 1, $i3->getCounter());
     }
 
     public function instanceTest() {
@@ -33,7 +33,35 @@ class ContainerTest {
         $c = $container->make("CT_C");
 
         Assert::assertObjectNotNull("CT_C", $c);
-        Assert::assertEqual("CT_D::value", 1, $c->getD()->getValue());
+        Assert::assertEquals("CT_D::value", 1, $c->getD()->getValue());
+    }
+
+    public function injectContainerTest() {
+        $container = new Core\Container();
+        $containerClass = $container->make("CT_Container");
+
+        Assert::assertObjectNotNull("CT_Container", $containerClass);
+        Assert::assertObjectNotNull("CT_Container::container", $containerClass->getContainer());
+        Assert::assertTrue("CT_Container === container", $container === $containerClass->getContainer());
+    }
+
+    public function injectArraysTest() {
+        $container = new Core\Container();
+        $route = $container->make("CT_Route", array(
+            'params' => array('uri' => 'uri', 'class' => 'class', 'method' => 'method', 'requestMethod' => 'get'),
+            'paramsConstraints' => array()
+        ));
+        Assert::assertObjectNotNull("CT_Route", $route);
+        Assert::assertObjectNotNull("CT_Route::container", $route->getContainer());
+    }
+
+    public function makeAndInvokeTest() {
+        $container = new Core\Container();
+        $output = $container->makeAndInvoke("CT_Invoke", "run", array(
+            'name' => 'A',
+            'surname' => 'B'
+        ));
+        Assert::assertEquals('output', "AB", $output);
     }
 }
 
@@ -86,4 +114,52 @@ class CT_Singleton {
         return self::$counter;
     }
 
+}
+
+class CT_Container {
+    private $container = null;
+
+    public function __construct(\Core\Container $container) {
+        $this->container = $container;
+    }
+
+    public function getContainer() {
+        return $this->container;
+    }
+}
+
+class CT_Route {
+    private $container;
+    private $params, $paramsConstraints;
+
+    public function __construct(\Core\Container $container, array $params = array(), array $paramsConstraints = array()) {
+        $this->container = $container;
+        $this->params = $params;
+        $this->paramsConstraints = $paramsConstraints;
+    }
+
+    public function getContainer() {
+        return $this->container;
+    }
+
+    public function getParams() {
+        return $this->params;
+    }
+
+    public function getParamsConstraints() {
+        return $this->paramsConstraints;
+    }
+
+}
+
+class CT_Invoke {
+    private $surname;
+
+    public function __construct($surname) {
+        $this->surname = $surname;
+    }
+
+    public function run($name) {
+        return $name.''.$this->surname;
+    }
 }

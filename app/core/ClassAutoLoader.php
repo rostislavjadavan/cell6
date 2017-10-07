@@ -1,62 +1,59 @@
 <?php
 
-/**
- * Class Auto Loader
- *
- * @package Core
- * @author spool
- */
-
 namespace Core;
 
+/**
+ * Class ClassAutoLoader
+ * @package Core
+ */
 class ClassAutoLoader {
 
-	/**
-	 * Get file path for class
-	 * 
-	 * @param string Class name
-     * @throws SystemException
-	 * @return string Class path
-	 */
-	public function getClassPath($class) {
-		$class = ltrim($class, '\\');
-		$segments = preg_split('#[\\\\]#', $class);
+    /**
+     * Get file path for class
+     *
+     * @param $class string Class name
+     * @throws RuntimeException
+     * @return string Class path
+     */
+    public function getClassPath($class) {
+        $class = ltrim($class, '\\');
+        $segments = preg_split('#[\\\\]#', $class);
 
-		$path = SYSPATH . DS . implode(DS, $segments) . '.php';
+        $path = SYSPATH . DIRECTORY_SEPARATOR . implode(DS, $segments) . '.php';
 
-		if (!file_exists($path)) {
-			throw new SystemException("LOADER: Class $class ($path) not found.");
-		}
+        if (!file_exists($path)) {
+            throw new RuntimeException("ClassAutoLoader: Class $class ($path) not found.");
+        }
 
-		return $path;
-	}
+        return $path;
+    }
 
-	/**
-	 * Register autoloader
-	 *
-	 * @return bool TRUE on success
-	 */
-	public function registerAutoloader() {
-		return spl_autoload_register(array($this, '_autoloader_func'), true, true);
-	}
+    /**
+     * Register autoloader
+     *
+     * @return bool TRUE on success
+     */
+    public function registerAutoloader() {
+        return spl_autoload_register(array($this, '_autoloader_func'), true, true);
+    }
 
-	/**
-	 * Autoloader function
-	 *
-	 * @param string Class name
-	 * @return bool TRUE if class is loaded
-	 */
-	private function _autoloader_func($class) {
-		$class = ltrim($class, '\\');
-		$segments = preg_split('#[\\\\]#', $class);
+    /**
+     * Autoloader function
+     *
+     * @param $class string Class name
+     * @return bool TRUE if class is loaded
+     */
+    private function _autoloader_func($class) {
+        $class = ltrim($class, '\\');
+        $segments = preg_split('#[\\\\]#', $class);
 
-		$file = SYSPATH . DS . implode(DS, $segments) . '.php';
+        $file = SYSPATH . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $segments) . '.php';
 
-		if (file_exists($file)) {
-			return include_once $file;
-		}
+        if (file_exists($file)) {
+            return include_once $file;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
 }

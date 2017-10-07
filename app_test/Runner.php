@@ -10,22 +10,22 @@ require_once CORE_PATH . "ColorCli.php";
 
 class Assert {
     public static function assertTrue($name, $value) {
-        echo "\t\t", $value == true ? ColorCli::green("$name=true OK") : ColorCli::red("$name=true FAIL!"), PHP_EOL;
+        echo $value == true ? \Core\ColorCli::green("$name=true OK") : \Core\ColorCli::red("$name=true FAIL!"), PHP_EOL;
     }
-    public static function assertEqual($name, $expectedValue ,$value) {
-        echo "\t\t", $value == $expectedValue ? ColorCli::green("$name=$value OK") : ColorCli::red("$name=$value, expected=$expectedValue FAIL!"), PHP_EOL;
+    public static function assertEquals($name, $expectedValue , $value) {
+        echo $value == $expectedValue ? \Core\ColorCli::green("$name=$value OK") : \Core\ColorCli::red("$name=$value, expected=$expectedValue FAIL!"), PHP_EOL;
     }
     public static function assertNotNull($name, $value) {
-        echo "\t\t", $value != null ? ColorCli::green("$name!=null OK") : ColorCli::red("$name!=null FAIL"), PHP_EOL;
+        echo $value != null ? \Core\ColorCli::green("$name!=null OK") : ColorCli::red("$name!=null FAIL"), PHP_EOL;
     }
     public static function assertObjectNotNull($name, $value) {
-        echo "\t\t", $value != null ? ColorCli::green("$name!=null (".get_class($value).") OK") : ColorCli::red("$name!=null FAIL"), PHP_EOL;
+        echo $value != null ? \Core\ColorCli::green("$name!=null (".get_class($value).") OK") : \Core\ColorCli::red("$name!=null FAIL"), PHP_EOL;
     }
 }
 
 class Runner {
     public function run() {
-        echo ColorCli::cyan("Cell6 Test Runner"), PHP_EOL, PHP_EOL;
+        echo \Core\ColorCli::cyan("Cell6 Test Runner"), PHP_EOL, PHP_EOL;
 
         $allFiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('test'));
         $testFiles = new RegexIterator($allFiles, '/\Test.php$/');
@@ -39,6 +39,8 @@ class Runner {
                 $this->runMethods($className);
             }
         }
+
+        echo PHP_EOL;
     }
 
     private function runMethods($className) {
@@ -46,9 +48,8 @@ class Runner {
         $instance = $class->newInstance();
 
         foreach ($class->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
-            echo "\t", ColorCli::light_gray($className . "::" . $method->getName()), PHP_EOL;
+            echo \Core\ColorCli::light_gray($className . "::" . $method->getName()), PHP_EOL;
             $method->invoke($instance);
-            echo PHP_EOL;
         }
     }
 }
