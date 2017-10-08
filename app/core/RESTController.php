@@ -1,20 +1,19 @@
 <?php
 
-/**
- * REST Controller
- *
- * @package MVC
- * @author spool
- */
-
 namespace Core;
 
+/**
+ * Class RESTController
+ * @package Core
+ */
 class RESTController extends Controller {
 	
-	protected $request;		
+	protected $request;
+	protected $container;
 	
-	public function __construct(Request $request) {
+	public function __construct(Request $request, Container $container) {
 		$this->request = $request;
+		$this->container = $container;
 	}
 		
 	public function getBody() {
@@ -30,7 +29,7 @@ class RESTController extends Controller {
 	}
 	
 	public function returnResponse(array $data, $statusCode = 200) {
-		return Container::build('\Core\JsonResponse', array(
+		return $this->container->make('\Core\JsonResponse', array(
 			'content' => $data, 'code' => $statusCode
 		));
 	}

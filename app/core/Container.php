@@ -86,11 +86,16 @@ class Container {
      * @param $methodName
      * @param array $args
      * @return mixed
+     * @throws RuntimeException
      */
     public function makeAndInvoke($className, $methodName, array $args = array()) {
-        $instance = $this->make($className, $args);
-        $method = new \ReflectionMethod($className, $methodName);
-        return $method->invokeArgs($instance, $this->getParamsForInvocation($method, $args));
+        try {
+            $instance = $this->make($className, $args);
+            $method = new \ReflectionMethod($className, $methodName);
+            return $method->invokeArgs($instance, $this->getParamsForInvocation($method, $args));
+        } catch (\ReflectionException $e) {
+            throw new RuntimeException($e);
+        }
     }
 
     /**

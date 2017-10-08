@@ -31,6 +31,20 @@ class Router {
         ));
     }
 
+    public function post($name, $uri, $class, $method, array $paramsConstraints = array()) {
+        $this->routes[$name] = $this->container->make("\Core\Route", array(
+            'params' => array('uri' => $uri, 'class' => $class, 'method' => $method, 'requestMethod' => 'post'),
+            'paramsConstraints' => $paramsConstraints
+        ));
+    }
+
+    public function any($name, $uri, $class, $method, array $paramsConstraints = array()) {
+        $this->routes[$name] = $this->container->make("\Core\Route", array(
+            'params' => array('uri' => $uri, 'class' => $class, 'method' => $method),
+            'paramsConstraints' => $paramsConstraints
+        ));
+    }
+
     public function setRoute($name, Route $route) {
         $this->routes[$name] = $route;
     }
@@ -113,4 +127,12 @@ class Router {
         return false;
     }
 
+    public function route($routeName, array $params = array(), array $query = array()) {
+        return $this->createUrl($routeName, $params) . (!empty($query) ? '?' . http_build_query($query) : '');
+    }
+
+    public function routeCurrent(array $params = array(), array $query = array()) {
+        $routeName = $this->getRoute('router')->getCurrentRouteName();
+        return $this->route($routeName, $params, $query);
+    }
 }
