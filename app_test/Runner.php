@@ -28,7 +28,11 @@ class Assert {
 
 class Runner {
     public function run() {
-        echo \Core\ColorCli::cyan("Cell6 Test Runner"), PHP_EOL, PHP_EOL;
+        echo PHP_EOL;
+        echo \Core\ColorCli::cyan("  /\\"), PHP_EOL;
+        echo \Core\ColorCli::cyan(" /  \\"), "  ", \Core\ColorCli::cyan("Cell6 Unit Test Runner"), PHP_EOL;
+        echo \Core\ColorCli::cyan("/__  \\"), PHP_EOL;
+        echo PHP_EOL;
 
         $allFiles = new RecursiveIteratorIterator(new RecursiveDirectoryIterator('test'));
         $testFiles = new RegexIterator($allFiles, '/\Test.php$/');

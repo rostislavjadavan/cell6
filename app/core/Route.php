@@ -129,7 +129,7 @@ class Route {
      * @return string URI
      * @throws \Exception
      */
-    public function createUri(array $params = NULL) {
+    public function uri(array $params = NULL) {
         $defaults = $this->params;
 
         $compile = function ($portion, $required) use (&$compile, $defaults, $params) {
@@ -163,7 +163,7 @@ class Route {
             }, $portion);
 
             if ($required && $missing) {
-                throw new \Exception('Route: Required route parameter not passed: ' . reset($missing));
+                throw new RuntimeException('Route: Required route parameter not passed \'' . reset($missing).'\'');
             }
 
             return array($result, $required);

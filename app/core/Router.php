@@ -108,28 +108,20 @@ class Router {
      * @param array $params
      * @return mixed
      */
-    public function createUri($name, array $params = array()) {
-        return $this->getRoute($name)->createUri($params);
+    public function uri($name, array $params = array()) {
+        return $this->getRoute($name)->uri($params);
     }
 
     /**
      * @param $name
      * @param array $params
-     * @return string
-     */
-    public function createUrl($name, array $params = array()) {
-        return $this->request->getBaseUrl() . $this->getRoute($name)->createUri($params);
-    }
-
-    /**
-     * @param $routeName
-     * @param array $params
      * @param array $query
      * @return string
      */
-    public function route($routeName, array $params = array(), array $query = array()) {
-        return $this->createUrl($routeName, $params) . (!empty($query) ? '?' . http_build_query($query) : '');
+    public function url($name, array $params = array(), array $query = array()) {
+        return $this->request->getBaseUrl() . $this->getRoute($name)->uri($params) . (!empty($query) ? '?' . http_build_query($query) : '');
     }
+
 }
 
 class RouteMatchResult {

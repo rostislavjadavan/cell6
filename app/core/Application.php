@@ -12,6 +12,8 @@ class Application {
     protected $request = null;
     protected $container = null;
 
+    protected $routeMatchResult = null;
+
     /**
      * Application constructor.
      *
@@ -51,10 +53,10 @@ class Application {
      * Get response for path
      *
      * @param $requestPath
-     * @return mixed|object
+     * @return mixed|Response
      */
     protected function getResponse($requestPath) {
-        $result = $this->router->match($requestPath);
+        $this->routeMatchResult = $result = $this->router->match($requestPath);
         if ($result == false) {
             return $this->processPageNotFound();
         }
@@ -67,9 +69,19 @@ class Application {
     }
 
     /**
+     * Return current route name, route and request params
+     *
+     * @return RouteMatchResult
+     */
+    public function getRouteMatchResult() {
+        return $this->routeMatchResult;
+    }
+
+
+    /**
      * 404 Page not Found
      *
-     * @return mixed|object
+     * @return mixed|Response
      */
     protected function processPageNotFound() {
         try {
@@ -86,7 +98,7 @@ class Application {
      * 500 Internal Server Error
      *
      * @param \Exception $e
-     * @return mixed|object
+     * @return mixed|Response
      * @throws \Exception
      */
     protected function processInternalServerError(\Exception $e) {
