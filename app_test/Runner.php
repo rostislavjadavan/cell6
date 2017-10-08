@@ -12,6 +12,9 @@ class Assert {
     public static function assertTrue($name, $value) {
         echo $value == true ? \Core\ColorCli::green("$name=true OK") : \Core\ColorCli::red("$name=true FAIL!"), PHP_EOL;
     }
+    public static function assertNotFalse($name, $value) {
+        echo $value != false ? \Core\ColorCli::green("$name!=false OK") : \Core\ColorCli::red("$name!=false FAIL!"), PHP_EOL;
+    }
     public static function assertEquals($name, $expectedValue , $value) {
         echo $value == $expectedValue ? \Core\ColorCli::green("$name=$value OK") : \Core\ColorCli::red("$name=$value, expected=$expectedValue FAIL!"), PHP_EOL;
     }
@@ -48,6 +51,9 @@ class Runner {
         $instance = $class->newInstance();
 
         foreach ($class->getMethods(ReflectionMethod::IS_PUBLIC) as $method) {
+            if ($method->isConstructor()) {
+                continue;
+            }
             echo \Core\ColorCli::light_gray($className . "::" . $method->getName()), PHP_EOL;
             $method->invoke($instance);
         }

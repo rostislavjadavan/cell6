@@ -55,21 +55,21 @@ class Request {
      * Request constructor.
      * @param Container $container
      */
-    public function __construct(Container $container) {
+    public function __construct(Container $container, $server, $query, $post, $files, $cookies, $session) {
         // Init
-        $this->server = new ArrayList($_SERVER);
-        $this->query = new ArrayList($_GET);
-        $this->post = new ArrayList($_POST);
-        $this->files = new ArrayList($_FILES);
-        $this->cookies = new ArrayList($_COOKIE);
-        $this->session = $container->make('\Core\Session');
+        $this->server = new ArrayList($server);
+        $this->query = new ArrayList($query);
+        $this->post = new ArrayList($post);
+        $this->files = new ArrayList($files);
+        $this->cookies = new ArrayList($cookies);
+        $this->session = $session;
 
         // Extract rewrite base (base directory)
         $rewriteBase = '';
         if ($this->server->is('SCRIPT_NAME')) {
             foreach (explode('/', $this->server->get('SCRIPT_NAME')) as $part) {
                 if (strpos($part, '.php') === false) {
-                    $rewriteBase = '/' . $part;
+                    $rewriteBase = $part;
                 }
             }
         }

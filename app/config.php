@@ -11,3 +11,4 @@ $router->error500('Main', 'error500');
 
 $router->get('homepage', '', 'Main', 'index');
 $router->get('page1', 'page1', 'Main', 'page1');
+$router->get('page2', 'page2/<name>', 'Main', 'page2');

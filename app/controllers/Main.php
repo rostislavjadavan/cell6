@@ -9,7 +9,11 @@ class Main extends \Core\Controller {
     }
 
     public function page1() {
-        return $this->html("Page 1");
+        return $this->html("<h1>Request</h1><pre>".print_r($this->container->make("\Core\Request"),true)."</pre>");
+    }
+
+    public function page2($name) {
+        return $this->html("<h1>$name</h1><pre>".print_r($this->container->make("\Core\Request"),true)."</pre>");
     }
 
     public function error404() {

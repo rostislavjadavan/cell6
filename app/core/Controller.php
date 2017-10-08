@@ -19,7 +19,6 @@ class Controller {
         $this->container = $container;
     }
 
-
     /**
      * HTML output
      *
@@ -30,7 +29,7 @@ class Controller {
         if ($content instanceof View) {
             $content = $content->render();
         }
-        return $this->container->make('\Core\Response', array('content' => $content));
+        return $this->container->make('\Core\HtmlResponse', array('content' => $content));
     }
 
     /**
