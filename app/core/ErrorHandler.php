@@ -98,6 +98,7 @@ class ErrorHandler {
      * @param $exception
      */
     private function renderException($exception) {
+        header("HTTP/1.0 500 Internal Server Error");
         $out = <<< EOD
 <html>
 	<head>

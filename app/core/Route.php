@@ -102,6 +102,7 @@ class Route {
 
     /**
      * Return response
+     * @param array $params
      * @return Response Response
      */
     public function getResponse($params = array()) {

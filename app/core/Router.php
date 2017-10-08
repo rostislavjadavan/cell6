@@ -1,14 +1,11 @@
 <?php
 
-/**
- * Router
- *
- * @package MVC
- * @author spool
- */
-
 namespace Core;
 
+/**
+ * Class Router
+ * @package Core
+ */
 class Router {
 
     protected $container = null;
@@ -19,36 +16,70 @@ class Router {
     protected $currentRouteResult = null;
     protected $request = null;
 
+    /**
+     * Router constructor.
+     * @param Container $container
+     * @param Request $request
+     */
     function __construct(Container $container, Request $request) {
         $this->container = $container;
         $this->request = $request;
     }
 
+    /**
+     * @param $name
+     * @param $uri
+     * @param $class
+     * @param $method
+     * @param array $paramsConstraints
+     */
     public function get($name, $uri, $class, $method, array $paramsConstraints = array()) {
-        $this->routes[$name] = $this->container->make("\Core\Route", array(
-            'params' => array('uri' => $uri, 'class' => $class, 'method' => $method, 'requestMethod' => 'get'),
-            'paramsConstraints' => $paramsConstraints
-        ));
+        $this->routes[$name] = $this->container->make("\Core\Route", array('params' => array('uri' => $uri, 'class' => $class, 'method' => $method, 'requestMethod' => 'get'), 'paramsConstraints' => $paramsConstraints));
     }
 
+    /**
+     * @param $name
+     * @param $uri
+     * @param $class
+     * @param $method
+     * @param array $paramsConstraints
+     */
     public function post($name, $uri, $class, $method, array $paramsConstraints = array()) {
-        $this->routes[$name] = $this->container->make("\Core\Route", array(
-            'params' => array('uri' => $uri, 'class' => $class, 'method' => $method, 'requestMethod' => 'post'),
-            'paramsConstraints' => $paramsConstraints
-        ));
+        $this->routes[$name] = $this->container->make("\Core\Route", array('params' => array('uri' => $uri, 'class' => $class, 'method' => $method, 'requestMethod' => 'post'), 'paramsConstraints' => $paramsConstraints));
     }
 
+    /**
+     * @param $name
+     * @param $uri
+     * @param $class
+     * @param $method
+     * @param array $paramsConstraints
+     */
     public function any($name, $uri, $class, $method, array $paramsConstraints = array()) {
-        $this->routes[$name] = $this->container->make("\Core\Route", array(
-            'params' => array('uri' => $uri, 'class' => $class, 'method' => $method),
-            'paramsConstraints' => $paramsConstraints
-        ));
+        $this->routes[$name] = $this->container->make("\Core\Route", array('params' => array('uri' => $uri, 'class' => $class, 'method' => $method), 'paramsConstraints' => $paramsConstraints));
     }
 
-    public function setRoute($name, Route $route) {
-        $this->routes[$name] = $route;
+    /**
+     * @param $class
+     * @param $method
+     */
+    public function error404($class, $method) {
+        $this->routes['404'] = $this->container->make("\Core\Route", array('params' => array('class' => $class, 'method' => $method)));
     }
 
+    /**
+     * @param $class
+     * @param $method
+     */
+    public function error500($class, $method) {
+        $this->routes['500'] = $this->container->make("\Core\Route", array('params' => array('class' => $class, 'method' => $method)));
+    }
+
+    /**
+     * @param $name
+     * @return mixed
+     * @throws RuntimeException
+     */
     public function getRoute($name) {
         if (!array_key_exists($name, $this->routes)) {
             throw new RuntimeException('Router: Route ' . $name . ' not found.');
@@ -56,83 +87,119 @@ class Router {
         return $this->routes[$name];
     }
 
-    public function getAll() {
-        return $this->routes;
-    }
-
-    public function remove($name) {
-        unset($this->routes[$name]);
-    }
-
+    /**
+     * @param $uri
+     * @return bool|mixed|RouteMatchResult
+     */
     public function match($uri) {
         $uri = trim($uri);
-
-        // Try to find route
-        $route = $this->findRoute($uri);
-
-        // No match => 404
-        if ($route === false) {
-            try {
-                return $this->getRoute('404')->getResponse();
-            } catch (RuntimeException $e) {
-                $content = "<html><head><title>Page not found</title></htead><h1>404</h1><p>Page not found</p>";
-                return $this->container->make('\Core\HtmlResponse', array('content' => $content, 'code' => 404));
-            }
-        }
-
-        // Match. First check for canonical url
-        if ($this->getCurrentUrl() != $this->request->getRequestUrl()) {
-            return $this->container->make('\Core\RedirectResponse', array('url' => $this->getCurrentUrl()));
-        }
-
-        // Invoke route
-        return $route->getResponse($this->currentRouteResult);
-    }
-
-    public function createUri($name, array $params = array()) {
-        return $this->getRoute($name)->createUri($params);
-    }
-
-    public function createUrl($name, array $params = array()) {
-        return $this->request->getBaseUrl() . $this->getRoute($name)->createUri($params);
-    }
-
-    public function getCurrentRoute() {
-        return $this->currentRoute;
-    }
-
-    function getCurrentRouteName() {
-        return $this->currentRouteName;
-    }
-
-    public function getCurrentUri() {
-        return $this->currentRoute->createUri($this->currentRouteResult);
-    }
-
-    public function getCurrentUrl() {
-        return $this->request->getBaseUrl() . $this->getCurrentUri();
-    }
-
-    protected function findRoute($uri) {
         foreach ($this->routes as $name => $route) {
             $result = $route->match($uri);
 
             if ($result !== false) {
-                $this->currentRoute = $route;
-                $this->currentRouteName = $name;
-                $this->currentRouteResult = $result;
-                return $route;
+                return $this->container->make('\Core\RouteMatchResult', array('name' => $name, 'route' => $route, 'requestParams' => $result));
             }
         }
         return false;
     }
 
+    /**
+     * @param $name
+     * @param array $params
+     * @return mixed
+     */
+    public function createUri($name, array $params = array()) {
+        return $this->getRoute($name)->createUri($params);
+    }
+
+    /**
+     * @param $name
+     * @param array $params
+     * @return string
+     */
+    public function createUrl($name, array $params = array()) {
+        return $this->request->getBaseUrl() . $this->getRoute($name)->createUri($params);
+    }
+
+    /**
+     * @param $routeName
+     * @param array $params
+     * @param array $query
+     * @return string
+     */
     public function route($routeName, array $params = array(), array $query = array()) {
         return $this->createUrl($routeName, $params) . (!empty($query) ? '?' . http_build_query($query) : '');
     }
+}
 
-    public function routeCurrent(array $params = array(), array $query = array()) {
-        $routeName = $this->getRoute('router')->getCurrentRouteName();
-        return $this->route($routeName, $params, $query);
+class RouteMatchResult {
+    private $request;
+    private $name;
+    private $route;
+    private $requestParams = array();
+
+    /**
+     * RouteMatchResult constructor.
+     * @param Request $request
+     * @param $name
+     * @param $route
+     * @param array $requestParams
+     * @internal param array $params
+     */
+    public function __construct(Request $request, $name, $route, array $requestParams) {
+        $this->request = $request;
+        $this->name = $name;
+        $this->route = $route;
+        $this->requestParams = $requestParams;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getName() {
+        return $this->name;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRoute() {
+        return $this->route;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRequestParams() {
+        return $this->requestParams;
+    }
+
+    /**
+     * Generate uri for this route. Params can be override
+     *
+     * @param array $params
+     * @return mixed
+     */
+    public function getUri(array $params = array()) {
+        return $this->route->createUri(array_merge($this->requestParams, $params));
+    }
+
+    /**
+     * Generate url for this route. Params can be override
+     *
+     * @param array $params
+     * @return string
+     */
+    public function getUrl(array $params = array()) {
+        return $this->request->getBaseUrl() . $this->getUri($params);
+    }
+
+    /**
+     * Return route output
+     *
+     * @return mixed
+     */
+    public function getResponse() {
+        return $this->route->getResponse($this->requestParams);
     }
 }
