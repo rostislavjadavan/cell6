@@ -110,6 +110,20 @@ class Response {
     }
 
     /**
+     * @param $name
+     * @param $value
+     * @param int $expire
+     * @param string $path
+     * @return bool
+     */
+    public function setCookie($name, $value, $expire = 0, $path = '/') {
+        $request = $this->container->make("\Core\Request");
+        $host = $request->isLocalhost() ? null : '.'.$request->getHost();
+        $expire = $expire > 0 ? time() + $expire : 0;
+        return setcookie($name, $value, $expire, $path, $host);
+    }
+
+    /**
      * Get response text for code
      *
      * @return string Response text

@@ -2,7 +2,9 @@
 
 namespace controllers;
 
-class Main extends \Core\Controller {
+use Core\Controller;
+
+class Main extends Controller {
 
     public function index() {
         return $this->html("Hello world");
@@ -13,7 +15,9 @@ class Main extends \Core\Controller {
     }
 
     public function page2($name) {
-        return $this->html("<h1>$name</h1><pre>".print_r($this->container->make("\Core\Request"),true)."</pre>");
+        $response = $this->html("<h1>$name</h1><pre>".print_r($this->container->make("\Core\Request"),true)."</pre>");
+        $response->setCookie("test", "value1", 10);
+        return $response;
     }
 
     public function error404() {

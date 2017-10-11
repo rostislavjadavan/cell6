@@ -75,7 +75,10 @@ class Request {
         }
 
         // Build base url
-        $this->baseUrl = ($this->isHttps() ? 'https://' : 'http://') . $this->getHost() . rtrim($rewriteBase, '/') . '/';
+        $this->baseUrl = ($this->isHttps() ? 'https://' : 'http://') . rtrim($this->getHost(), '/') . '/';
+        if (strlen(trim($rewriteBase)) > 0) {
+            $this->baseUrl .= rtrim($rewriteBase, '/') . '/';
+        }
 
         // Get current request path
         $this->path = '';

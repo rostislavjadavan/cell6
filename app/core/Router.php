@@ -173,7 +173,7 @@ class RouteMatchResult {
      * @return mixed
      */
     public function getUri(array $params = array()) {
-        return $this->route->createUri(array_merge($this->requestParams, $params));
+        return $this->route->uri(array_merge($this->requestParams, $params));
     }
 
     /**
