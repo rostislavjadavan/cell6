@@ -19,6 +19,7 @@ class Session extends ArrayList {
      */
     public function __construct() {
         if (session_status() !== \PHP_SESSION_ACTIVE) {
+            session_save_path("/tmp");
             if (!session_start()) {
                 throw new RuntimeException("Session: Failed to start session.");
             }
