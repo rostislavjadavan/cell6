@@ -1,35 +1,30 @@
 <?php
 
-/**
- * Filesystem Helper
- *
- * @author spool
- */
-
 namespace Core;
 
+/**
+ * Class Filesystem
+ * @package Core
+ */
 class Filesystem {
 
 	/**
 	 * Map
 	 *
-	 * Recusrively gets all files and folders in the directory, with an optional depth limit
+	 * Recursively gets all files and folders in the directory, with an optional depth limit
 	 *
 	 * @param	string	the path to the folder
 	 * @param	number	how many levels to process
 	 * @return	array	The list of files and folders
 	 */
 	public static function map($path, $levels = NULL, $structured = FALSE, $files_first = FALSE) {
-		// trim trailing slashes
 		$levels = is_null($levels) ? -1 : $levels;
 		$path = preg_replace('|/+$|', '', $path);
 
-		// filesystem objects
 		$files = array();
 		$folders = array();
 		$objects = array_diff(scandir($path), array('.', '..'));
 
-		// check through
 		foreach ($objects as $v) {
 			$dir = $path . '/' . $v;
 			if (is_dir($dir)) {
@@ -39,7 +34,6 @@ class Filesystem {
 			}
 		}
 
-		// return
 		if ($structured) {
 			return array('/folders' => $folders, '/files' => $files);
 		} else {
@@ -47,28 +41,25 @@ class Filesystem {
 		}
 	}
 
-	/**
-	 * Get folders
-	 *
-	 * Returns all folders in the directory, excluding . and ..
-	 *
-	 * @param	string	path to the folder
-	 * @param	string	Append the initial path to the return values
-	 * @return	array	The list of folders
-	 */
+    /**
+     * Get folders
+     *
+     * Returns all folders in the directory, excluding . and ..
+     *
+     * @param    string    path to the folder
+     * @param bool $appendPath
+     * @return array The list of folders
+     */
 	public static function getFolders($path, $appendPath = false) {
-		// objects
 		$folders = array();
 		$objects = array_diff(scandir($path), array('.', '..'));
 
-		// match
 		foreach ($objects as $object) {
 			if (is_dir($path . $object)) {
 				array_push($folders, $appendPath ? $path . $object : $object);
 			}
 		}
 
-		// return
 		return $folders;
 	}
 
@@ -85,36 +76,28 @@ class Filesystem {
 	//print_r(filesystem::getFiles('/', '/(\.ico|\.xml)$/'));
 	//print_r(filesystem::getFiles('/'));
 	public static function getFiles($path, $mask = NULL) {
-		// objects
 		$files = array();
 		//$path		= preg_replace('%/+$%', '/', $path . '/'); // add trailing slash
 		$objects = array_diff(scandir($path), array('.', '..'));
 
-		// mask
 		if ($mask != NULL) {
-			// regular expression for detecing a regular expression
 			$rxIsRegExp = '/^([%|\/]|{).+(\1|})[imsxeADSUXJu]*$/';
 
-			// an array of file extenstions
 			if (is_array($mask)) {
 				$mask = '%\.(' . implode('|', $mask) . ')$%i';
 			}
 
-			// if the supplied mask is NOT a regular expression...
-			// assume it's a file extension and make it a regular expression
 			else if (!preg_match($rxIsRegExp, $mask)) {
 				$mask = "/\.$mask$/i";
 			}
 		}
 
-		// match
 		foreach ($objects as $object) {
 			if (is_file($path . $object) && ($mask != NULL ? preg_match($mask, $object) : TRUE)) {
 				array_push($files, $object);
 			}
 		}
 
-		// Create objects
 		$fileObjects = array();
 
 		foreach ($files as $file) {
@@ -124,49 +107,46 @@ class Filesystem {
 		return $fileObjects;
 	}
 
-	/**
-	 * Delete Files
-	 *
-	 * Deletes all files and optionally folders from the path specfied
-	 *
-	 * @param	string	path to file
-	 * @param	bool	delete contained directories
-	 * @param	bool	delete root directory (this is the same as a recursive delete_all - use with caution!)
-	 * @return	void
-	 */
+    /**
+     * Delete Files
+     *
+     * Deletes all files and optionally folders from the path specfied
+     *
+     * @param $path
+     * @param null $mask
+     * @param bool $del_dir
+     * @param bool $del_root
+     * @param int $level
+     * @return void
+     * @throws RuntimeException
+     * @internal param path $string to file
+     * @internal param delete $bool contained directories
+     * @internal param delete $bool root directory (this is the same as a recursive delete_all - use with caution!)
+     */
 	public static function deleteFiles($path, $mask = NULL, $del_dir = FALSE, $del_root = FALSE, $level = 0) {
-		// Trim the trailing slash
 		$path = preg_replace('|/+$|', '', $path);
 
-		// fail if a leading slash is encountered
 		if ($level == 0 && preg_match('%^[\\\\/]+%', $path)) {
-			trigger_error('filesystem::deletefiles - <span style="color:red">Absolute paths not allowed</span>', E_USER_WARNING);
+			throw new RuntimeException('Absolute paths not allowed');
 			return;
 		}
 
-		// fail on directory error
 		if (!$current_dir = @opendir($path)) {
 			return;
 		}
 
-		// file mask
 		if ($level == 0 && $mask != NULL) {
-			// regular expression for detecing a regular expression
 			$rxIsRegExp = '/^([%|\/]|{).+(\1|})[imsxeADSUXJu]*$/';
 
-			// an array of file extenstions
 			if (is_array($mask)) {
 				$mask = '%\.(' . implode('|', $mask) . ')$%';
 			}
 
-			// if the supplied mask is NOT a regular expression...
-			// assume it's a file extension and make it a regular expression
 			else if (!preg_match($rxIsRegExp, $mask)) {
 				$mask = "/\.$mask$/";
 			}
 		}
 
-		// loop through files
 		while (FALSE !== ($filename = @readdir($current_dir))) {
 			if ($filename != "." and $filename != "..") {
 				if (is_dir($path . '/' . $filename)) {
@@ -179,8 +159,7 @@ class Filesystem {
 			}
 		}
 		@closedir($current_dir);
-
-		// remove folders
+        
 		if ($del_dir && $level > 0) {
 			@rmdir($path);
 		}
