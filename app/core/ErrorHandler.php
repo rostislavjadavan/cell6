@@ -41,14 +41,14 @@ class ErrorHandler {
         }
     }
 
-    /*
+    /**
      * Exception handler
      *
      * Called on uncaught exception
      *
      * @param Exception Uncaught exception
+     * @return bool
      */
-
     public function exceptionHandler($e) {
         $this->renderException($e);
         return true;
@@ -63,15 +63,12 @@ class ErrorHandler {
      * @param $error string Error message
      * @param $file string Path to file where error occurs
      * @param $line int Line number
-     * @throws RuntimeException
      * @return bool
+     * @throws \ErrorException
      */
     public function errorHandler($code, $error, $file = NULL, $line = NULL) {
         if (error_reporting() && !in_array($code, $this->disallowedErrors)) {
-            throw new RuntimeException($error, $code, 0, $file, $line);
-
-            // Return TRUE to bypass standard PHP error handler
-            return true;
+            throw new \ErrorException($error, $code, 0, $file, $line);
         }
 
         return false;
@@ -88,7 +85,7 @@ class ErrorHandler {
 
         if (error_reporting() && $error && in_array($error['type'], $this->shutdownErrors)) {
             ob_clean();
-            $this->renderException(new ErrorException($error['message'], $error['type'], 0, $error['file'], $error['line']));
+            $this->renderException(new \ErrorException($error['message'], $error['type'], 0, $error['file'], $error['line']));
         }
 
         exit(1);
