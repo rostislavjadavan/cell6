@@ -51,9 +51,9 @@ class Controller {
      * @return String
      */
     public function template($content, $template, array $data = array()) {
-        $contentView = View::load($content);
+        $contentView = View::load($this->container, $content);
         $contentView->setParams($data);
-        $templateView = View::load($template);
+        $templateView = View::load($this->container, $template);
         $templateView->setParams($data);
         $templateView->setParam('content', $contentView->render());
         return $templateView->render();

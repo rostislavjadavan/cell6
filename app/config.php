@@ -16,5 +16,5 @@ $router->get('view', '/view', 'page');
 $router->get('func', '/func', function() {
     return 'func';
 });
-
+$router->get('bootstrap4', '/boot4', 'Main::bootstrap');
 $router->rest("api-endpoint", '/api', 'Rest');

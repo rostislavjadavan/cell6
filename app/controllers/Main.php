@@ -27,4 +27,10 @@ class Main extends Controller {
     public function error500() {
         return $this->html("500 :(");
     }
+
+    public function bootstrap() {
+        return $this->template('page', 'bootstrap4/template', array(
+            'title' => 'Bootstrap4'
+        ));
+    }
 }
