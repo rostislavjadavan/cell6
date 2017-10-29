@@ -1,14 +1,17 @@
 <?php
 
-/**
- * View
- *
- * @author spool
- */
-
 namespace Core;
 
+/**
+ * Class View
+ * @package Core
+ */
 class View {
+
+    /**
+     * @var null Container
+     */
+    protected $container = null;
 
     /**
      * @var string Filename
@@ -27,38 +30,29 @@ class View {
 
     /**
      * Load view by given full class path
+     * @param Container $container
      * @param type Name
-     * @param type Params
-     * @return \Core\View
+     * @param array $params
+     * @return View
      */
-    public static function load($name, $params = array()) {
-        $filename = Container::get('loader')->getClassPath($name);
+    public static function load(Container $container, $name, $params = array()) {
+        $filename = $container->make("\Core\ClassAutoLoader")->getClassPath('\views\\'.$name);
         if (!file_exists($filename)) {
-            return View::factory(DEBUG_MODE ? "View $name not found." : "", $params);
+            return new View($container, '<span style="color:red">View '.$name.' not found.</span>', $params);
+
         }
-        $content = file_get_contents($filename);
-        return View::factory($content, $params);
+        return new View($container, file_get_contents($filename), $params);
     }
 
     /**
-     * Load view
+     * View constructor.
      *
-     * @param String Name
-     * @param Array Params
-     * @return \Core\View
+     * @param Container $container
+     * @param $content
+     * @param array $params
      */
-    public static function factory($content, $params = array()) {
-        return new View($content, $params);
-    }
-
-    /**
-     * Init
-     *
-     * @param string View name
-     * @param array Params
-     */
-    public function __construct($content, $params = array()) {
-        //$this->load($name);
+    public function __construct(Container $container, $content, $params = array()) {
+        $this->container = $container;
         $this->content = $content;
         $this->params = $params;
     }
@@ -66,8 +60,8 @@ class View {
     /**
      * Set param
      *
-     * @param string Key
-     * @param mixed Value
+     * @param string $key  Key
+     * @param mixed $value  Value
      */
     public function setParam($key, $value) {
         $this->params[$key] = $value;
@@ -76,7 +70,7 @@ class View {
     /**
      * Set params
      *
-     * @param array Params
+     * @param array $params Params
      */
     public function setParams(array $params) {
         $this->params = array_merge($this->params, $params);
@@ -115,10 +109,15 @@ class View {
         return $this->render();
     }
 
-
+    /**
+     * Translate view placeholders
+     *
+     * @param $content
+     * @return string
+     */
     protected function translateCommonVars($content) {
-        $baseUrl = Container::get('request')->getBaseUrl();
-        $dict = array('{BASEURL}' => $baseUrl, '{PUBURL}' => $baseUrl . PUBDIR, '{ASSESTSURL}' => $baseUrl . SYSDIR . US . 'assets');
+        $baseUrl = $this->container->make("\Core\Request")->getBaseUrl();
+        $dict = array('{BASEURL}' => $baseUrl, '{PUBURL}' => $baseUrl . PUBDIR);
         return strtr($content, $dict);
     }
 }

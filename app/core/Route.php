@@ -50,7 +50,6 @@ class Route {
             unset($params['uri']);
         }
 
-        $params['class'] = "\controllers\\" . $params['class'];
         $this->params = $params;
         $this->paramsConstraints = $paramsConstraints;
         $this->container = $container;
@@ -104,13 +103,24 @@ class Route {
      * Return response
      * @param array $params
      * @return Response Response
+     * @throws RuntimeException
      */
     public function getResponse($params = array()) {
-        return $this->container->makeAndInvoke(
-            $this->params['class'],
-            $this->params['method'],
-            array_merge($this->params, $params)
-        );
+        if (array_key_exists('class', $this->params)) {
+            $targetParts = explode('::', $this->params['class']);
+            if (count($targetParts) < 2) {
+                throw new RuntimeException("Invalid route target: ".$this->params['class']);
+            }
+            return $this->container->makeAndInvoke('\controllers\\'.$targetParts[0], $targetParts[1], array_merge($this->params, $params));
+        }
+        else if (array_key_exists('view', $this->params)) {
+            $view = View::load($this->container, $this->params['view']);
+            return $this->container->make('\Core\HtmlResponse', array('content' => $view->render()));
+        }
+        else if (array_key_exists('function', $this->params)) {
+            return call_user_func($this->params['function']);
+        }
+        throw new RuntimeException("No target defined for route ".$this->uri);
     }
 
     /**

@@ -19,7 +19,7 @@ class ClassAutoLoader {
         $class = ltrim($class, '\\');
         $segments = preg_split('#[\\\\]#', $class);
 
-        $path = SYSPATH . DIRECTORY_SEPARATOR . implode(DS, $segments) . '.php';
+        $path = SYSPATH . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $segments) . '.php';
 
         if (!file_exists($path)) {
             throw new RuntimeException("ClassAutoLoader: Class $class ($path) not found.");

@@ -29,50 +29,71 @@ class Router {
     /**
      * @param $name
      * @param $uri
-     * @param $class
-     * @param $method
+     * @param array $target
      * @param array $paramsConstraints
+     * @internal param $class
+     * @internal param $method
      */
-    public function get($name, $uri, $class, $method, array $paramsConstraints = array()) {
-        $this->routes[$name] = $this->container->make("\Core\Route", array('params' => array('uri' => $uri, 'class' => $class, 'method' => $method, 'requestMethod' => 'get'), 'paramsConstraints' => $paramsConstraints));
+    public function get($name, $uri, $target, array $paramsConstraints = array()) {
+        $params = array_merge(array('uri' => $uri, 'requestMethod' => 'get'), $this->targetToParamsMagic($target));
+        $this->routes[$name] = $this->container->make("\Core\Route", array('params' => $params, 'paramsConstraints' => $paramsConstraints));
     }
 
     /**
      * @param $name
      * @param $uri
-     * @param $class
-     * @param $method
+     * @param $target
      * @param array $paramsConstraints
+     * @internal param $class
+     * @internal param $method
      */
-    public function post($name, $uri, $class, $method, array $paramsConstraints = array()) {
-        $this->routes[$name] = $this->container->make("\Core\Route", array('params' => array('uri' => $uri, 'class' => $class, 'method' => $method, 'requestMethod' => 'post'), 'paramsConstraints' => $paramsConstraints));
+    public function post($name, $uri, $target, array $paramsConstraints = array()) {
+        $params = array_merge(array('uri' => $uri, 'requestMethod' => 'post'), $this->targetToParamsMagic($target));
+        $this->routes[$name] = $this->container->make("\Core\Route", array('params' => $params, 'paramsConstraints' => $paramsConstraints));
     }
 
     /**
      * @param $name
      * @param $uri
-     * @param $class
-     * @param $method
+     * @param $target
      * @param array $paramsConstraints
+     * @internal param $class
+     * @internal param $method
      */
-    public function any($name, $uri, $class, $method, array $paramsConstraints = array()) {
-        $this->routes[$name] = $this->container->make("\Core\Route", array('params' => array('uri' => $uri, 'class' => $class, 'method' => $method), 'paramsConstraints' => $paramsConstraints));
+    public function any($name, $uri, $target, array $paramsConstraints = array()) {
+        $params = array_merge(array('uri' => $uri), $this->targetToParamsMagic($target));
+        $this->routes[$name] = $this->container->make("\Core\Route", array('params' => $params, 'paramsConstraints' => $paramsConstraints));
     }
 
     /**
-     * @param $class
-     * @param $method
+     * @param $target
+     * @internal param $class
+     * @internal param $method
      */
-    public function error404($class, $method) {
-        $this->routes['404'] = $this->container->make("\Core\Route", array('params' => array('class' => $class, 'method' => $method)));
+    public function error404($target) {
+        $this->routes['404'] = $this->container->make("\Core\Route", array('params' => $this->targetToParamsMagic($target)));
     }
 
     /**
-     * @param $class
-     * @param $method
+     * @param $target
+     * @internal param $class
+     * @internal param $method
      */
-    public function error500($class, $method) {
-        $this->routes['500'] = $this->container->make("\Core\Route", array('params' => array('class' => $class, 'method' => $method)));
+    public function error500($target) {
+        $this->routes['500'] = $this->container->make("\Core\Route", array('params' => $this->targetToParamsMagic($target)));
+    }
+
+    private function targetToParamsMagic($target) {
+        if (is_string($target) && strpos($target, "::") > 0) {
+            return array('class' => $target);
+        }
+        elseif (is_string($target)) {
+            return array('view' => $target);
+        }
+        elseif (is_callable($target)) {
+            return array('function' => $target);
+        }
+        throw new RuntimeException("Unknown target for route: ".$this->uri());
     }
 
     /**
