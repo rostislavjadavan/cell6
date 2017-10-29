@@ -20,18 +20,10 @@ class RESTRoute extends Route {
 	private $allowedHttpMethods = array('GET', 'POST', 'PUT', 'DELETE');
 
     /**
-     * RESTRoute constructor.
-     * @param Container $container
+     * Return response
+     * @param array $params
+     * @return Response Response
      */
-    public function __construct(Container $container) {
-        $this->container = $container;
-    }
-
-    /**
-	 * Return response
-	 * @return Response Response
-     * @throws \Exception
-	 */
 	public function getResponse($params = array()) {
 		$request = $this->container->make('\Core\Request');
 		
@@ -41,7 +33,7 @@ class RESTRoute extends Route {
 		}
 
 		return $this->container->makeAndInvoke(
-		    $this->params['class'],
+            '\controllers\\'.$this->params['class'],
             strtolower($method),
             array_merge($this->params, $params)
         );

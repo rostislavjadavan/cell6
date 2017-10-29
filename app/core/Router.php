@@ -35,7 +35,7 @@ class Router {
      * @internal param $method
      */
     public function get($name, $uri, $target, array $paramsConstraints = array()) {
-        $params = array_merge(array('uri' => $uri, 'requestMethod' => 'get'), $this->targetToParamsMagic($target));
+        $params = array_merge(array('uri' => $uri, 'requestMethod' => 'get'), $this->convertTargetToRouteParams($target));
         $this->routes[$name] = $this->container->make("\Core\Route", array('params' => $params, 'paramsConstraints' => $paramsConstraints));
     }
 
@@ -48,7 +48,7 @@ class Router {
      * @internal param $method
      */
     public function post($name, $uri, $target, array $paramsConstraints = array()) {
-        $params = array_merge(array('uri' => $uri, 'requestMethod' => 'post'), $this->targetToParamsMagic($target));
+        $params = array_merge(array('uri' => $uri, 'requestMethod' => 'post'), $this->convertTargetToRouteParams($target));
         $this->routes[$name] = $this->container->make("\Core\Route", array('params' => $params, 'paramsConstraints' => $paramsConstraints));
     }
 
@@ -61,8 +61,19 @@ class Router {
      * @internal param $method
      */
     public function any($name, $uri, $target, array $paramsConstraints = array()) {
-        $params = array_merge(array('uri' => $uri), $this->targetToParamsMagic($target));
+        $params = array_merge(array('uri' => $uri), $this->convertTargetToRouteParams($target));
         $this->routes[$name] = $this->container->make("\Core\Route", array('params' => $params, 'paramsConstraints' => $paramsConstraints));
+    }
+
+    /**
+     * @param $name
+     * @param $uri
+     * @param $class
+     * @param array $paramsConstraints
+     */
+    public function rest($name, $uri, $class, array $paramsConstraints = array()) {
+        $params = array('uri' => $uri, 'class' => $class );
+        $this->routes[$name] = $this->container->make("\Core\RESTRoute", array('params' => $params, 'paramsConstraints' => $paramsConstraints));
     }
 
     /**
@@ -71,7 +82,7 @@ class Router {
      * @internal param $method
      */
     public function error404($target) {
-        $this->routes['404'] = $this->container->make("\Core\Route", array('params' => $this->targetToParamsMagic($target)));
+        $this->routes['404'] = $this->container->make("\Core\Route", array('params' => $this->convertTargetToRouteParams($target)));
     }
 
     /**
@@ -80,10 +91,15 @@ class Router {
      * @internal param $method
      */
     public function error500($target) {
-        $this->routes['500'] = $this->container->make("\Core\Route", array('params' => $this->targetToParamsMagic($target)));
+        $this->routes['500'] = $this->container->make("\Core\Route", array('params' => $this->convertTargetToRouteParams($target)));
     }
 
-    private function targetToParamsMagic($target) {
+    /**
+     * @param $target
+     * @return array
+     * @throws RuntimeException
+     */
+    private function convertTargetToRouteParams($target) {
         if (is_string($target) && strpos($target, "::") > 0) {
             return array('class' => $target);
         }

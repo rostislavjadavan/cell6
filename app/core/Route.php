@@ -45,7 +45,7 @@ class Route {
      */
     public function __construct(Container $container, array $params = array(), array $paramsConstraints = array()) {
         if (array_key_exists('uri', $params)) {
-            $this->uri = $params['uri'];
+            $this->uri = ltrim($params['uri'], "/");
             $this->routeRegexp = $this->buildRouteRegexp($this->uri);
             unset($params['uri']);
         }
