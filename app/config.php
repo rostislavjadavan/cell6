@@ -4,7 +4,7 @@
  * Config
  */
 $config = $container->singleton("\Core\Config");
-$config['app'] = "application name";
+$config['app'] = "cell6 application";
 
 /**
  * Database

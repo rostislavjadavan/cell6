@@ -10,13 +10,16 @@ namespace Core;
 class Controller {
 
     protected $container = null;
+    protected $config = null;
 
     /**
      * Controller constructor.
      * @param Container $container
+     * @param Config $config
      */
-    public function __construct(Container $container) {
+    public function __construct(Container $container, Config $config) {
         $this->container = $container;
+        $this->config = $config;
     }
 
     /**
@@ -42,6 +45,18 @@ class Controller {
      */
     public function json(array $data, $code = 200) {
         return $this->container->make('\Core\JsonResponse', ['content' => $data, 'code' => $code]);
+    }
+
+    /**
+     * View output
+     *
+     * @param $name
+     * @param array $data
+     * @param int $code
+     * @return HtmlResponse
+     */
+    public function view($name, array $data =[], $code = 200) {
+        return $this->html(View::load($name, $data), $code);
     }
 
     /**

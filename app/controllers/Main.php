@@ -7,7 +7,7 @@ use Core\Controller;
 class Main extends Controller {
 
     public function index() {
-        return $this->template("page", "bootstrap4/template", ["title" => 'Homepage']);
+        return $this->template("page", "bootstrap4/template", ["title" => $this->config['app']]);
     }
 
     public function page1() {
@@ -15,7 +15,7 @@ class Main extends Controller {
     }
 
     public function page2($name) {
-        $response = $this->html("<h1>$name</h1><pre>" . print_r($this->container->make("\Core\Request"), true) . "</pre>");
+        $response = $this->html("<h1>Your name is $name</h1>");
         $response->setCookie("test", "value1", 10);
         return $response;
     }

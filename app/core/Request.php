@@ -54,6 +54,12 @@ class Request {
     /**
      * Request constructor.
      * @param Container $container
+     * @param $server
+     * @param $query
+     * @param $post
+     * @param $files
+     * @param $cookies
+     * @param $session
      */
     public function __construct(Container $container, $server, $query, $post, $files, $cookies, $session) {
         // Init

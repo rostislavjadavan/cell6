@@ -11,5 +11,12 @@
                 suscipit velit. Phasellus sed justo id sem commodo laoreet molestie vel nibh. Class aptent taciti
                 sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
         </div>
+        <div class="col-lg-12 pb-3">
+            <ul>
+                <li><strong><?php echo $config['app'] ?></strong></li>
+                <li><a href="<?php echo $router->url("page1") ?>">/page1</a></li>
+                <li><a href="<?php echo $router->url("page2", ['name' => 'Rob']) ?>">/page2 with name</a></li>
+            </ul>
+        </div>
     </div>
 </div>

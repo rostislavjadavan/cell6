@@ -54,7 +54,11 @@ class View {
     public function __construct(Container $container, $content, $params = []) {
         $this->container = $container;
         $this->content = $content;
-        $this->params = $params;
+        $this->params = array_merge([
+            'config' => $container->make("\Core\Config"),
+            'router' => $container->make("\Core\Router"),
+            'request' => $container->make("\Core\Request")
+        ],$params);
     }
 
     /**
