@@ -3,7 +3,7 @@
     "type": "project",
     "require": {
     },
-    "license": "Free",
+    "license": "MIT license",
     "authors": [
         {
             "name": "Rostislav Jadavan",

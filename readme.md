@@ -116,7 +116,7 @@ class Main extends Controller {
 
 Url generator is _Router_ class.
 
-Im view _Router_ is available as _$router_.
+In view _Router_ is available as _$router_.
 
 ```php
 <ul>
@@ -157,7 +157,7 @@ class MyClass {
 ```
 
 ```php
-$mmyclass = $container->make('MyClass');
+$myclass = $container->make('MyClass');
 ```
 
 This will create _MyClass_ instance and inject request object.
