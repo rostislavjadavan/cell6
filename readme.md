@@ -1,5 +1,17 @@
-# cell6
-## php mvc microframework
+
+![](logo/cell6_logo.png)
+
+cell6 is php microframork that I made for fun and for my personal projects :)
+
+## Installation
+
+```bash
+git clone https://github.com/rostislavjadavan/cell6.git
+```
+Then just go to _http://localhost/cell6_ and everything should work.
+
+If you have different installation path don't forget to update _RewriteBase_ in _.htaccess_ file.
+
 
 ## Folder structure
 
@@ -9,9 +21,14 @@ Whole application is located in _app_ directory.
 - database
 - views
 
+Any other useful directory should be added here:
+- libs
+- models
+- ...
+
 ## Configuration
 
-Routes, properties and database configuration is located in _app/config.php_.
+Routes, configuration properties and database configuration is located in _app/config.php_.
 
 ### Routing
 
