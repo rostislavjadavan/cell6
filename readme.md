@@ -3,7 +3,7 @@
 
 cell6 is php microframork that I made for fun and for my personal projects :)
 
-## Installation
+# Installation
 
 ```bash
 git clone https://github.com/rostislavjadavan/cell6.git
@@ -13,7 +13,7 @@ Then just go to _http://localhost/cell6_ and everything should work.
 If you have different installation path don't forget to update _RewriteBase_ in _.htaccess_ file.
 
 
-## Folder structure
+# Folder structure
 
 Whole application is located in _app_ directory.
 - controllers
@@ -26,11 +26,11 @@ Any other useful directory should be added here:
 - models
 - ...
 
-## Configuration
+# Configuration
 
 Routes, configuration properties and database configuration is located in _app/config.php_.
 
-### Routing
+## Routing
 
 - Route to controller/method.
 ```php
@@ -52,7 +52,7 @@ $router->get('closure', '/func', function () {
 });
 ```
 
-### Routing parameters
+## Routing parameters
 
 ```php
 $router->get('showName', '/show-name/<name>', 'Main::showName');
@@ -65,7 +65,7 @@ public function showName($name) {
 }
 ```
 
-### REST route
+## REST route
 
 ```php
 $router->rest("user", '/api/user', 'UserApi');
@@ -87,14 +87,32 @@ class UserApi extends RESTController {
 ```
 If method is not implemented 501 error is returned.
 
-### Error routes
+## Error routes
 
 ```php
 $router->error404('Main::error404');
 $router->error500('Main::error500');
 ```
 
-## Controller
+## Configuration properties
+
+Configuration values can be stored in _Config_ class. Class is available in controller.
+
+```php
+class Main extends Controller {
+    public function index() {
+        $value = $this->config['key'];
+        ...
+    }
+}
+```
+
+_app/config.php_
+```php
+$config['key'] = "value";
+```
+
+# Controller
 
 ```php
 class Main extends Controller {
@@ -105,7 +123,7 @@ class Main extends Controller {
 }
 ```
 
-### Rendering view
+## Rendering view
 
 ```php
 class Main extends Controller {
@@ -116,7 +134,7 @@ class Main extends Controller {
 }
 ```
 
-### Rendering view using template
+## Rendering view using template
 
 _template($viewName, $templateName, $params, $code)_ method can be used. Params will be propagated into view and template.
   
@@ -129,7 +147,7 @@ class Main extends Controller {
 }
 ```
 
-## Url
+# Url
 
 Url generator is _Router_ class.
 
@@ -141,7 +159,7 @@ In view _Router_ is available as _$router_.
     <li><a href="<?php echo $router->url("page2", ['name' => 'Rob']) ?>">/page2 with name</a></li>
 </ul>
 ```
-### Base Url
+## Base Url
 
 Base url is available in request:
 
@@ -161,7 +179,7 @@ Also there is placeholder that leads to _public_ directory:
 {PUBURL}
 ```
 
-## Dependency injenction
+# Dependency injection
 
 There is simple DI container available that is able to construct object graph using constructor injection.
 
@@ -212,7 +230,7 @@ class MyClass {
 }
 ```
 
-## Request
+# Request
 
 ```php
 class Main extends Controller {
@@ -228,7 +246,7 @@ class Main extends Controller {
 }
 ```
 
-## Cookies
+# Cookies
 
 ```php
 class Main extends Controller {
@@ -239,11 +257,24 @@ class Main extends Controller {
     }
 }
 ```
-## Database
+# Database
 
 For database access cell6 is using Sparrow Database toolkit. See https://github.com/mikecao/sparrow.
 
-There is Sqlite database located in _app/database_ folder that can be used. But you are feel free to use any
+There is Sqlite database located in _app/database_ folder that can be used. But you are free to use any
 PDO compatible database.
 
-
+```php
+class Main extends Controller {
+    public function showUser($id) {
+        $database = $this->container->make('\Core\Database');
+        
+        $user = $database->from('user')->where('id', $id)->select(array('id', 'name'))->one();
+        
+        if ($user) {
+            return $this->html("user: ".$user['name']);
+        }        
+        return $this->html("user not found", 404);
+    }
+}
+```
