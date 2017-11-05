@@ -7,7 +7,7 @@ use Core\Controller;
 class Main extends Controller {
 
     public function index() {
-        return $this->html("Hello world");
+        return $this->template("page", "bootstrap4/template", [ "title" => 'Homepage']);
     }
 
     public function page1() {

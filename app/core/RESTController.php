@@ -35,18 +35,18 @@ class RESTController extends Controller {
 	}
 	
 	public function get() {
-		throw new \Exception("RESTCONTROLLER: GET not implemented");
+		return $this->json(['error' => "GET not implemented"], 501);
 	}
 	
 	public function post() {
-		throw new \Exception("RESTCONTROLLER: POST not implemented");
+        return $this->json(['error' => "POST not implemented"], 501);
 	}
 	
 	public function put() {
-		throw new \Exception("RESTCONTROLLER: PUT not implemented");
+        return $this->json(['error' => "PUT not implemented"], 501);
 	}
 	
 	public function delete() {
-		throw new \Exception("RESTCONTROLLER: DELETE not implemented");
+        return $this->json(['error' => "DELETE not implemented"], 501);
 	}
 }

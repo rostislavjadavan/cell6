@@ -23,23 +23,25 @@ class Controller {
      * HTML output
      *
      * @param View|String $content
+     * @param int $code
      * @return HtmlResponse
      */
-    public function html($content) {
+    public function html($content, $code = 200) {
         if ($content instanceof View) {
             $content = $content->render();
         }
-        return $this->container->make('\Core\HtmlResponse', array('content' => $content));
+        return $this->container->make('\Core\HtmlResponse', array('content' => $content, 'code' => $code));
     }
 
     /**
      * JSON Output
      *
      * @param array $data
+     * @param int $code
      * @return JsonResponse
      */
-    public function json(array $data) {
-        return $this->container->make('\Core\JsonResponse', array('content' => $data));
+    public function json(array $data, $code = 200) {
+        return $this->container->make('\Core\JsonResponse', array('content' => $data, 'code' => $code));
     }
 
     /**
@@ -48,14 +50,15 @@ class Controller {
      * @param String $content
      * @param String $template
      * @param array $data
+     * @param int $code
      * @return String
      */
-    public function template($content, $template, array $data = array()) {
+    public function template($content, $template, array $data = array(), $code = 200) {
         $contentView = View::load($this->container, $content);
         $contentView->setParams($data);
         $templateView = View::load($this->container, $template);
         $templateView->setParams($data);
         $templateView->setParam('content', $contentView->render());
-        return $templateView->render();
+        return $this->html($templateView->render(), $code);
     }
 }
