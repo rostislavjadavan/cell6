@@ -1,6 +1,12 @@
 <?php
 
 /**
+ * Config
+ */
+$config = $container->singleton("\Core\Config");
+$config['app'] = "application name";
+
+/**
  * Database
  *
  */
