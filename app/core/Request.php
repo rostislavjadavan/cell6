@@ -262,7 +262,7 @@ class Request {
      *
      * @var string
      */
-    private $localhostDomainsWhitelist = array('127.0.0.1', '::1');
+    private $localhostDomainsWhitelist = ['127.0.0.1', '::1'];
 
     /**
      * Check if system is running on localhost

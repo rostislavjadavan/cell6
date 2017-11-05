@@ -10,7 +10,7 @@ class Router {
 
     protected $container = null;
 
-    protected $routes = array();
+    protected $routes = [];
     protected $currentRouteName = null;
     protected $currentRoute = null;
     protected $currentRouteResult = null;
@@ -34,9 +34,9 @@ class Router {
      * @internal param $class
      * @internal param $method
      */
-    public function get($name, $uri, $target, array $paramsConstraints = array()) {
-        $params = array_merge(array('uri' => $uri, 'requestMethod' => 'get'), $this->convertTargetToRouteParams($target));
-        $this->routes[$name] = $this->container->make("\Core\Route", array('params' => $params, 'paramsConstraints' => $paramsConstraints));
+    public function get($name, $uri, $target, array $paramsConstraints = []) {
+        $params = array_merge(['uri' => $uri, 'requestMethod' => 'get'], $this->convertTargetToRouteParams($target));
+        $this->routes[$name] = $this->container->make("\Core\Route", ['params' => $params, 'paramsConstraints' => $paramsConstraints]);
     }
 
     /**
@@ -47,9 +47,9 @@ class Router {
      * @internal param $class
      * @internal param $method
      */
-    public function post($name, $uri, $target, array $paramsConstraints = array()) {
-        $params = array_merge(array('uri' => $uri, 'requestMethod' => 'post'), $this->convertTargetToRouteParams($target));
-        $this->routes[$name] = $this->container->make("\Core\Route", array('params' => $params, 'paramsConstraints' => $paramsConstraints));
+    public function post($name, $uri, $target, array $paramsConstraints = []) {
+        $params = array_merge(['uri' => $uri, 'requestMethod' => 'post'], $this->convertTargetToRouteParams($target));
+        $this->routes[$name] = $this->container->make("\Core\Route", ['params' => $params, 'paramsConstraints' => $paramsConstraints]);
     }
 
     /**
@@ -60,9 +60,9 @@ class Router {
      * @internal param $class
      * @internal param $method
      */
-    public function any($name, $uri, $target, array $paramsConstraints = array()) {
-        $params = array_merge(array('uri' => $uri), $this->convertTargetToRouteParams($target));
-        $this->routes[$name] = $this->container->make("\Core\Route", array('params' => $params, 'paramsConstraints' => $paramsConstraints));
+    public function any($name, $uri, $target, array $paramsConstraints = []) {
+        $params = array_merge(['uri' => $uri], $this->convertTargetToRouteParams($target));
+        $this->routes[$name] = $this->container->make("\Core\Route", ['params' => $params, 'paramsConstraints' => $paramsConstraints]);
     }
 
     /**
@@ -71,9 +71,9 @@ class Router {
      * @param $class
      * @param array $paramsConstraints
      */
-    public function rest($name, $uri, $class, array $paramsConstraints = array()) {
-        $params = array('uri' => $uri, 'class' => $class );
-        $this->routes[$name] = $this->container->make("\Core\RESTRoute", array('params' => $params, 'paramsConstraints' => $paramsConstraints));
+    public function rest($name, $uri, $class, array $paramsConstraints = []) {
+        $params = ['uri' => $uri, 'class' => $class];
+        $this->routes[$name] = $this->container->make("\Core\RESTRoute", ['params' => $params, 'paramsConstraints' => $paramsConstraints]);
     }
 
     /**
@@ -82,7 +82,7 @@ class Router {
      * @internal param $method
      */
     public function error404($target) {
-        $this->routes['404'] = $this->container->make("\Core\Route", array('params' => $this->convertTargetToRouteParams($target)));
+        $this->routes['404'] = $this->container->make("\Core\Route", ['params' => $this->convertTargetToRouteParams($target)]);
     }
 
     /**
@@ -91,7 +91,7 @@ class Router {
      * @internal param $method
      */
     public function error500($target) {
-        $this->routes['500'] = $this->container->make("\Core\Route", array('params' => $this->convertTargetToRouteParams($target)));
+        $this->routes['500'] = $this->container->make("\Core\Route", ['params' => $this->convertTargetToRouteParams($target)]);
     }
 
     /**
@@ -101,15 +101,13 @@ class Router {
      */
     private function convertTargetToRouteParams($target) {
         if (is_string($target) && strpos($target, "::") > 0) {
-            return array('class' => $target);
+            return ['class' => $target];
+        } elseif (is_string($target)) {
+            return ['view' => $target];
+        } elseif (is_callable($target)) {
+            return ['function' => $target];
         }
-        elseif (is_string($target)) {
-            return array('view' => $target);
-        }
-        elseif (is_callable($target)) {
-            return array('function' => $target);
-        }
-        throw new RuntimeException("Unknown target for route: ".$this->uri());
+        throw new RuntimeException("Unknown target for route: " . $this->uri());
     }
 
     /**
@@ -134,7 +132,7 @@ class Router {
             $result = $route->match($uri);
 
             if ($result !== false) {
-                return $this->container->make('\Core\RouteMatchResult', array('name' => $name, 'route' => $route, 'requestParams' => $result));
+                return $this->container->make('\Core\RouteMatchResult', ['name' => $name, 'route' => $route, 'requestParams' => $result]);
             }
         }
         return false;
@@ -145,7 +143,7 @@ class Router {
      * @param array $params
      * @return mixed
      */
-    public function uri($name, array $params = array()) {
+    public function uri($name, array $params = []) {
         return $this->getRoute($name)->uri($params);
     }
 
@@ -155,7 +153,7 @@ class Router {
      * @param array $query
      * @return string
      */
-    public function url($name, array $params = array(), array $query = array()) {
+    public function url($name, array $params = [], array $query = []) {
         return $this->request->getBaseUrl() . $this->getRoute($name)->uri($params) . (!empty($query) ? '?' . http_build_query($query) : '');
     }
 
@@ -165,7 +163,7 @@ class RouteMatchResult {
     private $request;
     private $name;
     private $route;
-    private $requestParams = array();
+    private $requestParams = [];
 
     /**
      * RouteMatchResult constructor.
@@ -209,7 +207,7 @@ class RouteMatchResult {
      * @param array $params
      * @return mixed
      */
-    public function getUri(array $params = array()) {
+    public function getUri(array $params = []) {
         return $this->route->uri(array_merge($this->requestParams, $params));
     }
 
@@ -219,7 +217,7 @@ class RouteMatchResult {
      * @param array $params
      * @return string
      */
-    public function getUrl(array $params = array()) {
+    public function getUrl(array $params = []) {
         return $this->request->getBaseUrl() . $this->getUri($params);
     }
 

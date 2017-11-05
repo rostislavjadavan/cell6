@@ -30,7 +30,7 @@ class Controller {
         if ($content instanceof View) {
             $content = $content->render();
         }
-        return $this->container->make('\Core\HtmlResponse', array('content' => $content, 'code' => $code));
+        return $this->container->make('\Core\HtmlResponse', ['content' => $content, 'code' => $code]);
     }
 
     /**
@@ -41,7 +41,7 @@ class Controller {
      * @return JsonResponse
      */
     public function json(array $data, $code = 200) {
-        return $this->container->make('\Core\JsonResponse', array('content' => $data, 'code' => $code));
+        return $this->container->make('\Core\JsonResponse', ['content' => $data, 'code' => $code]);
     }
 
     /**
@@ -53,7 +53,7 @@ class Controller {
      * @param int $code
      * @return String
      */
-    public function template($content, $template, array $data = array(), $code = 200) {
+    public function template($content, $template, array $data = [], $code = 200) {
         $contentView = View::load($this->container, $content);
         $contentView->setParams($data);
         $templateView = View::load($this->container, $template);

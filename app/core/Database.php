@@ -30,12 +30,8 @@ class Database {
     protected $query_time;
     protected $class;
 
-    protected static $db_types = array(
-        'pdo', 'mysqli', 'pgsql', 'sqlite', 'sqlite3'
-    );
-    protected static $cache_types = array(
-        'memcached', 'memcache', 'xcache'
-    );
+    protected static $db_types = ['pdo', 'mysqli', 'pgsql', 'sqlite', 'sqlite3'];
+    protected static $cache_types = ['memcached', 'memcache', 'xcache'];
 
     public $last_query;
     public $num_rows;
@@ -62,7 +58,7 @@ class Database {
      * @return string New SQL statement
      */
     public function build($sql, $input) {
-        return (strlen($input) > 0) ? ($sql.' '.$input) : $sql;
+        return (strlen($input) > 0) ? ($sql . ' ' . $input) : $sql;
     }
 
     /**
@@ -79,11 +75,11 @@ class Database {
             throw new \Exception('Invalid connection string.');
         }
 
-        $cfg = array();
+        $cfg = [];
 
         $cfg['type'] = isset($url['scheme']) ? $url['scheme'] : $url['path'];
         $cfg['hostname'] = isset($url['host']) ? $url['host'] : null;
-        $cfg['database'] = isset($url['path']) ? substr($url['path'],1) : null;
+        $cfg['database'] = isset($url['path']) ? substr($url['path'], 1) : null;
         $cfg['username'] = isset($url['user']) ? $url['user'] : null;
         $cfg['password'] = isset($url['pass']) ? $url['pass'] : null;
         $cfg['port'] = isset($url['port']) ? $url['port'] : null;
@@ -109,9 +105,7 @@ class Database {
             }
         }
 
-        $this->stats['avg_query_time'] =
-            $this->stats['total_time'] /
-            (float)(($this->stats['num_queries'] > 0) ? $this->stats['num_queries'] : 1);
+        $this->stats['avg_query_time'] = $this->stats['total_time'] / (float)(($this->stats['num_queries'] > 0) ? $this->stats['num_queries'] : 1);
 
         return $this->stats;
     }
@@ -163,7 +157,7 @@ class Database {
      */
     protected function parseCondition($field, $value = null, $join = '', $escape = true) {
         if (is_string($field)) {
-            if ($value === null) return $join.' '.trim($field);
+            if ($value === null) return $join . ' ' . trim($field);
 
             $operator = '';
 
@@ -192,8 +186,7 @@ class Database {
                     default:
                         $condition = $operator;
                 }
-            }
-            else {
+            } else {
                 $condition = '=';
             }
 
@@ -203,23 +196,20 @@ class Database {
 
             if (is_array($value)) {
                 if (strpos($operator, '@') === false) $condition = ' IN ';
-                $value = '('.implode(',', array_map(array($this, 'quote'), $value)).')';
-            }
-            else {
+                $value = '(' . implode(',', array_map([$this, 'quote'], $value)) . ')';
+            } else {
                 $value = ($escape && !is_numeric($value)) ? $this->quote($value) : $value;
             }
 
-            return $join.' '.str_replace('|', '', $field).$condition.$value;
-        }
-        else if (is_array($field)) {
+            return $join . ' ' . str_replace('|', '', $field) . $condition . $value;
+        } else if (is_array($field)) {
             $str = '';
             foreach ($field as $key => $value) {
                 $str .= $this->parseCondition($key, $value, $join, $escape);
                 $join = '';
             }
             return $str;
-        }
-        else {
+        } else {
             throw new \Exception('Invalid where condition.');
         }
     }
@@ -250,19 +240,13 @@ class Database {
      * @throws \Exception For invalid join type
      */
     public function join($table, array $fields, $type = 'INNER') {
-        static $joins = array(
-            'INNER',
-            'LEFT OUTER',
-            'RIGHT OUTER',
-            'FULL OUTER'
-        );
+        static $joins = ['INNER', 'LEFT OUTER', 'RIGHT OUTER', 'FULL OUTER'];
 
         if (!in_array($type, $joins)) {
             throw new \Exception('Invalid join type.');
         }
 
-        $this->joins .= ' '.$type.' JOIN '.$table.
-            $this->parseCondition($fields, null, ' ON', false);
+        $this->joins .= ' ' . $type . ' JOIN ' . $table . $this->parseCondition($fields, null, ' ON', false);
 
         return $this;
     }
@@ -346,16 +330,15 @@ class Database {
 
         if (is_array($field)) {
             foreach ($field as $key => $value) {
-                $field[$key] = $value.' '.$direction;
+                $field[$key] = $value . ' ' . $direction;
             }
-        }
-        else {
-            $field .= ' '.$direction;
+        } else {
+            $field .= ' ' . $direction;
         }
 
         $fields = (is_array($field)) ? implode(', ', $field) : $field;
 
-        $this->order .= $join.' '.$fields;
+        $this->order .= $join . ' ' . $fields;
 
         return $this;
     }
@@ -370,7 +353,7 @@ class Database {
         $join = (empty($this->order)) ? 'GROUP BY' : ',';
         $fields = (is_array($field)) ? implode(',', $field) : $field;
 
-        $this->groups .= $join.' '.$fields;
+        $this->groups .= $join . ' ' . $fields;
 
         return $this;
     }
@@ -398,7 +381,7 @@ class Database {
      */
     public function limit($limit, $offset = null) {
         if ($limit !== null) {
-            $this->limit = 'LIMIT '.$limit;
+            $this->limit = 'LIMIT ' . $limit;
         }
         if ($offset !== null) {
             $this->offset($offset);
@@ -416,7 +399,7 @@ class Database {
      */
     public function offset($offset, $limit = null) {
         if ($offset !== null) {
-            $this->offset = 'OFFSET '.$offset;
+            $this->offset = 'OFFSET ' . $offset;
         }
         if ($limit !== null) {
             $this->limit($limit);
@@ -442,12 +425,7 @@ class Database {
      * @param string $value2 Second value
      */
     public function between($field, $value1, $value2) {
-        $this->where(sprintf(
-            '%s BETWEEN %s AND %s',
-            $field,
-            $this->quote($value1),
-            $this->quote($value2)
-        ));
+        $this->where(sprintf('%s BETWEEN %s AND %s', $field, $this->quote($value1), $this->quote($value2)));
     }
 
     /**
@@ -464,20 +442,7 @@ class Database {
         $fields = (is_array($fields)) ? implode(',', $fields) : $fields;
         $this->limit($limit, $offset);
 
-        $this->sql(array(
-            'SELECT',
-            $this->distinct,
-            $fields,
-            'FROM',
-            $this->table,
-            $this->joins,
-            $this->where,
-            $this->groups,
-            $this->having,
-            $this->order,
-            $this->limit,
-            $this->offset
-        ));
+        $this->sql(['SELECT', $this->distinct, $fields, 'FROM', $this->table, $this->joins, $this->where, $this->groups, $this->having, $this->order, $this->limit, $this->offset]);
 
         return $this;
     }
@@ -494,20 +459,9 @@ class Database {
         if (empty($data)) return $this;
 
         $keys = implode(',', array_keys($data));
-        $values = implode(',', array_values(
-            array_map(
-                array($this, 'quote'),
-                $data
-            )
-        ));
+        $values = implode(',', array_values(array_map([$this, 'quote'], $data)));
 
-        $this->sql(array(
-            'INSERT INTO',
-            $this->table,
-            '('.$keys.')',
-            'VALUES',
-            '('.$values.')'
-        ));
+        $this->sql(['INSERT INTO', $this->table, '(' . $keys . ')', 'VALUES', '(' . $values . ')']);
 
         return $this;
     }
@@ -523,24 +477,17 @@ class Database {
 
         if (empty($data)) return $this;
 
-        $values = array();
+        $values = [];
 
         if (is_array($data)) {
             foreach ($data as $key => $value) {
-                $values[] = (is_numeric($key)) ? $value : $key.'='.$this->quote($value);
+                $values[] = (is_numeric($key)) ? $value : $key . '=' . $this->quote($value);
             }
-        }
-        else {
+        } else {
             $values[] = (string)$data;
         }
 
-        $this->sql(array(
-            'UPDATE',
-            $this->table,
-            'SET',
-            implode(',', $values),
-            $this->where
-        ));
+        $this->sql(['UPDATE', $this->table, 'SET', implode(',', $values), $this->where]);
 
         return $this;
     }
@@ -558,11 +505,7 @@ class Database {
             $this->where($where);
         }
 
-        $this->sql(array(
-            'DELETE FROM',
-            $this->table,
-            $this->where
-        ));
+        $this->sql(['DELETE FROM', $this->table, $this->where]);
 
         return $this;
     }
@@ -575,11 +518,7 @@ class Database {
      */
     public function sql($sql = null) {
         if ($sql !== null) {
-            $this->sql = trim(
-                (is_array($sql)) ?
-                    array_reduce($sql, array($this, 'build')) :
-                    $sql
-            );
+            $this->sql = trim((is_array($sql)) ? array_reduce($sql, [$this, 'build']) : $sql);
 
             return $this;
         }
@@ -601,32 +540,20 @@ class Database {
         // Connection string
         if (is_string($db)) {
             $this->setDb($this->parseConnection($db));
-        }
-        // Connection information
+        } // Connection information
         else if (is_array($db)) {
             switch ($db['type']) {
                 case 'mysqli':
-                    $this->db = new \mysqli(
-                        $db['hostname'],
-                        $db['username'],
-                        $db['password'],
-                        $db['database']
-                    );
+                    $this->db = new \mysqli($db['hostname'], $db['username'], $db['password'], $db['database']);
 
                     if ($this->db->connect_error) {
-                        throw new \Exception('Connection error: '.$this->db->connect_error);
+                        throw new \Exception('Connection error: ' . $this->db->connect_error);
                     }
 
                     break;
 
                 case 'pgsql':
-                    $str = sprintf(
-                        'host=%s dbname=%s user=%s password=%s',
-                        $db['hostname'],
-                        $db['database'],
-                        $db['username'],
-                        $db['password']
-                    );
+                    $str = sprintf('host=%s dbname=%s user=%s password=%s', $db['hostname'], $db['database'], $db['username'], $db['password']);
 
                     $this->db = \pg_connect($str);
 
@@ -636,7 +563,7 @@ class Database {
                     $this->db = \sqlite_open($db['database'], 0666, $error);
 
                     if (!$this->db) {
-                        throw new \Exception('Connection error: '.$error);
+                        throw new \Exception('Connection error: ' . $error);
                     }
 
                     break;
@@ -647,12 +574,7 @@ class Database {
                     break;
 
                 case 'pdomysql':
-                    $dsn = sprintf(
-                        'mysql:host=%s;port=%d;dbname=%s',
-                        $db['hostname'],
-                        isset($db['port']) ? $db['port'] : 3306,
-                        $db['database']
-                    );
+                    $dsn = sprintf('mysql:host=%s;port=%d;dbname=%s', $db['hostname'], isset($db['port']) ? $db['port'] : 3306, $db['database']);
 
                     $this->db = new \PDO($dsn, $db['username'], $db['password']);
                     $db['type'] = 'pdo';
@@ -660,14 +582,7 @@ class Database {
                     break;
 
                 case 'pdopgsql':
-                    $dsn = sprintf(
-                        'pgsql:host=%s;port=%d;dbname=%s;user=%s;password=%s',
-                        $db['hostname'],
-                        isset($db['port']) ? $db['port'] : 5432,
-                        $db['database'],
-                        $db['username'],
-                        $db['password']
-                    );
+                    $dsn = sprintf('pgsql:host=%s;port=%d;dbname=%s;user=%s;password=%s', $db['hostname'], isset($db['port']) ? $db['port'] : 5432, $db['database'], $db['username'], $db['password']);
 
                     $this->db = new \PDO($dsn);
                     $db['type'] = 'pdo';
@@ -675,7 +590,7 @@ class Database {
                     break;
 
                 case 'pdosqlite':
-                    $this->db = new \PDO('sqlite:/'.$db['database']);
+                    $this->db = new \PDO('sqlite:/' . $db['database']);
                     $db['type'] = 'pdo';
 
                     break;
@@ -686,8 +601,7 @@ class Database {
             }
 
             $this->db_type = $db['type'];
-        }
-        // Connection object or resource
+        } // Connection object or resource
         else {
             $type = $this->getDbType($db);
 
@@ -718,8 +632,7 @@ class Database {
     public function getDbType($db) {
         if (is_object($db)) {
             return strtolower(get_class($db));
-        }
-        else if (is_resource($db)) {
+        } else if (is_resource($db)) {
             switch (get_resource_type($db)) {
                 case 'mysql link':
                     return 'mysql';
@@ -766,9 +679,7 @@ class Database {
 
         if ($this->stats_enabled) {
             if (empty($this->stats)) {
-                $this->stats = array(
-                    'queries' => array()
-                );
+                $this->stats = ['queries' => []];
             }
 
             $this->query_time = microtime(true);
@@ -784,16 +695,14 @@ class Database {
 
                         if (!$result) {
                             $error = $this->db->errorInfo();
-                        }
-                        else {
+                        } else {
                             $result->execute();
 
                             $this->num_rows = $result->rowCount();
                             $this->affected_rows = $result->rowCount();
                             $this->insert_id = $this->db->lastInsertId();
                         }
-                    }
-                    catch (\PDO\Exception $ex) {
+                    } catch (\PDO\Exception $ex) {
                         $error = $ex->getMessage();
                     }
 
@@ -804,12 +713,10 @@ class Database {
 
                     if (!$result) {
                         $error = $this->db->error;
-                    }
-                    else {
+                    } else {
                         if (is_object($result)) {
                             $this->num_rows = $result->num_rows;
-                        }
-                        else {
+                        } else {
                             $this->affected_rows = $this->db->affected_rows;
                         }
                         $this->insert_id = $this->db->insert_id;
@@ -822,12 +729,10 @@ class Database {
 
                     if (!$result) {
                         $error = mysql_error();
-                    }
-                    else {
+                    } else {
                         if (!is_bool($result)) {
                             $this->num_rows = mysql_num_rows($result);
-                        }
-                        else {
+                        } else {
                             $this->affected_rows = mysql_affected_rows($this->db);
                         }
                         $this->insert_id = mysql_insert_id($this->db);
@@ -840,8 +745,7 @@ class Database {
 
                     if (!$result) {
                         $error = pg_last_error($this->db);
-                    }
-                    else {
+                    } else {
                         $this->num_rows = pg_num_rows($result);
                         $this->affected_rows = pg_affected_rows($result);
                         $this->insert_id = pg_last_oid($result);
@@ -865,8 +769,7 @@ class Database {
 
                     if ($result === false) {
                         $error = $this->db->lastErrorMsg();
-                    }
-                    else {
+                    } else {
                         $this->num_rows = 0;
                         $this->affected_rows = ($result) ? $this->db->changes() : 0;
                         $this->insert_id = $this->db->lastInsertRowId();
@@ -877,20 +780,15 @@ class Database {
 
             if ($error !== null) {
                 if ($this->show_sql) {
-                    $error .= "\nSQL: ".$this->sql;
+                    $error .= "\nSQL: " . $this->sql;
                 }
-                throw new \Exception('Database error: '.$error);
+                throw new \Exception('Database error: ' . $error);
             }
         }
 
         if ($this->stats_enabled) {
             $time = microtime(true) - $this->query_time;
-            $this->stats['queries'][] = array(
-                'query' => $this->sql,
-                'time' => $time,
-                'rows' => (int)$this->num_rows,
-                'changes' => (int)$this->affected_rows
-            );
+            $this->stats['queries'][] = ['query' => $this->sql, 'time' => $time, 'rows' => (int)$this->num_rows, 'changes' => (int)$this->affected_rows];
         }
 
         return $result;
@@ -908,7 +806,7 @@ class Database {
             $this->select();
         }
 
-        $data = array();
+        $data = [];
 
         $result = $this->execute($key, $expire);
 
@@ -916,10 +814,9 @@ class Database {
             $data = $result;
 
             if ($this->stats_enabled) {
-                $this->stats['cached'][$this->key_prefix.$key] = $this->sql;
+                $this->stats['cached'][$this->key_prefix . $key] = $this->sql;
             }
-        }
-        else {
+        } else {
             switch ($this->db_type) {
                 case 'pdo':
                     $data = $result->fetchAll(\PDO::FETCH_ASSOC);
@@ -930,8 +827,7 @@ class Database {
                 case 'mysqli':
                     if (function_exists('mysqli_fetch_all')) {
                         $data = $result->fetch_all(MYSQLI_ASSOC);
-                    }
-                    else {
+                    } else {
                         while ($row = $result->fetch_assoc()) {
                             $data[] = $row;
                         }
@@ -981,7 +877,7 @@ class Database {
 
         $data = $this->many($key, $expire);
 
-        $row = (!empty($data)) ? $data[0] : array();
+        $row = (!empty($data)) ? $data[0] : [];
 
         return $row;
     }
@@ -1011,13 +907,9 @@ class Database {
      * @return object Self reference
      */
     public function min($field, $key = null, $expire = 0) {
-        $this->select('MIN('.$field.') min_value');
+        $this->select('MIN(' . $field . ') min_value');
 
-        return $this->value(
-            'min_value',
-            $key,
-            $expire
-        );
+        return $this->value('min_value', $key, $expire);
     }
 
     /**
@@ -1029,13 +921,9 @@ class Database {
      * @return object Self reference
      */
     public function max($field, $key = null, $expire = 0) {
-        $this->select('MAX('.$field.') max_value');
+        $this->select('MAX(' . $field . ') max_value');
 
-        return $this->value(
-            'max_value',
-            $key,
-            $expire
-        );
+        return $this->value('max_value', $key, $expire);
     }
 
     /**
@@ -1047,13 +935,9 @@ class Database {
      * @return object Self reference
      */
     public function sum($field, $key = null, $expire = 0) {
-        $this->select('SUM('.$field.') sum_value');
+        $this->select('SUM(' . $field . ') sum_value');
 
-        return $this->value(
-            'sum_value',
-            $key,
-            $expire
-        );
+        return $this->value('sum_value', $key, $expire);
     }
 
     /**
@@ -1065,13 +949,9 @@ class Database {
      * @return object Self reference
      */
     public function avg($field, $key = null, $expire = 0) {
-        $this->select('AVG('.$field.') avg_value');
+        $this->select('AVG(' . $field . ') avg_value');
 
-        return $this->value(
-            'avg_value',
-            $key,
-            $expire
-        );
+        return $this->value('avg_value', $key, $expire);
     }
 
     /**
@@ -1083,13 +963,9 @@ class Database {
      * @return object Self reference
      */
     public function count($field = '*', $key = null, $expire = 0) {
-        $this->select('COUNT('.$field.') num_rows');
+        $this->select('COUNT(' . $field . ') num_rows');
 
-        return $this->value(
-            'num_rows',
-            $key,
-            $expire
-        );
+        return $this->value('num_rows', $key, $expire);
     }
 
     /**
@@ -1108,27 +984,23 @@ class Database {
                         return $this->db->quote($value);
 
                     case 'mysqli':
-                        return "'".$this->db->real_escape_string($value)."'";
+                        return "'" . $this->db->real_escape_string($value) . "'";
 
                     case 'mysql':
-                        return "'".mysql_real_escape_string($value, $this->db)."'";
+                        return "'" . mysql_real_escape_string($value, $this->db) . "'";
 
                     case 'pgsql':
-                        return "'".pg_escape_string($this->db, $value)."'";
+                        return "'" . pg_escape_string($this->db, $value) . "'";
 
                     case 'sqlite':
-                        return "'".sqlite_escape_string($value)."'";
+                        return "'" . sqlite_escape_string($value) . "'";
 
                     case 'sqlite3':
-                        return "'".$this->db->escapeString($value)."'";
+                        return "'" . $this->db->escapeString($value) . "'";
                 }
             }
 
-            $value = str_replace(
-                array('\\', "\0", "\n", "\r", "'", '"', "\x1a"),
-                array('\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'),
-                $value
-            );
+            $value = str_replace(['\\', "\0", "\n", "\r", "'", '"', "\x1a"], ['\\\\', '\\0', '\\n', '\\r', "\\'", '\\"', '\\Z'], $value);
 
             return "'$value'";
         }
@@ -1152,28 +1024,20 @@ class Database {
             if ($cache{0} == '.' || $cache{0} == '/') {
                 $this->cache = $cache;
                 $this->cache_type = 'file';
-            }
-            else {
+            } else {
                 $this->setCache($this->parseConnection($cache));
             }
-        }
-        // Connection information
+        } // Connection information
         else if (is_array($cache)) {
             switch ($cache['type']) {
                 case 'memcache':
                     $this->cache = new Memcache;
-                    $this->cache->connect(
-                        $cache['hostname'],
-                        $cache['port']
-                    );
+                    $this->cache->connect($cache['hostname'], $cache['port']);
                     break;
 
                 case 'memcached':
                     $this->cache = new Memcached;
-                    $this->cache->addServer(
-                        $cache['hostname'],
-                        $cache['port']
-                    );
+                    $this->cache->addServer($cache['hostname'], $cache['port']);
                     break;
 
                 default:
@@ -1181,8 +1045,7 @@ class Database {
             }
 
             $this->cache_type = $cache['type'];
-        }
-        // Cache object
+        } // Cache object
         else if (is_object($cache)) {
             $type = strtolower(get_class($cache));
 
@@ -1212,7 +1075,7 @@ class Database {
      * @param int $expire Expiration time in seconds
      */
     public function store($key, $value, $expire = 0) {
-        $key = $this->key_prefix.$key;
+        $key = $this->key_prefix . $key;
 
         switch ($this->cache_type) {
             case 'memcached':
@@ -1232,11 +1095,8 @@ class Database {
                 break;
 
             case 'file':
-                $file = $this->cache.'/'.md5($key);
-                $data = array(
-                    'value' => $value,
-                    'expire' => ($expire > 0) ? (time() + $expire) : 0
-                );
+                $file = $this->cache . '/' . md5($key);
+                $data = ['value' => $value, 'expire' => ($expire > 0) ? (time() + $expire) : 0];
                 file_put_contents($file, serialize($data));
                 break;
 
@@ -1252,7 +1112,7 @@ class Database {
      * @return mixed Cached value
      */
     public function fetch($key) {
-        $key = $this->key_prefix.$key;
+        $key = $this->key_prefix . $key;
 
         switch ($this->cache_type) {
             case 'memcached':
@@ -1273,14 +1133,13 @@ class Database {
                 return xcache_get($key);
 
             case 'file':
-                $file = $this->cache.'/'.md5($key);
+                $file = $this->cache . '/' . md5($key);
 
                 if ($this->is_cached = file_exists($file)) {
                     $data = unserialize(file_get_contents($file));
                     if ($data['expire'] == 0 || time() < $data['expire']) {
                         return $data['value'];
-                    }
-                    else {
+                    } else {
                         $this->is_cached = false;
                     }
                 }
@@ -1299,7 +1158,7 @@ class Database {
      * @return object Self reference
      */
     public function clear($key) {
-        $key = $this->key_prefix.$key;
+        $key = $this->key_prefix . $key;
 
         switch ($this->cache_type) {
             case 'memcached':
@@ -1315,7 +1174,7 @@ class Database {
                 return xcache_unset($key);
 
             case 'file':
-                $file = $this->cache.'/'.md5($key);
+                $file = $this->cache . '/' . md5($key);
                 if (file_exists($file)) {
                     return unlink($file);
                 }
@@ -1355,7 +1214,7 @@ class Database {
                 if ($handle = opendir($this->cache)) {
                     while (false !== ($file = readdir($handle))) {
                         if ($file != '.' && $file != '..') {
-                            unlink($this->cache.'/'.$file);
+                            unlink($this->cache . '/' . $file);
                         }
                     }
                     closedir($handle);
@@ -1363,7 +1222,7 @@ class Database {
                 break;
 
             default:
-                $this->cache = array();
+                $this->cache = [];
                 break;
         }
     }
@@ -1379,8 +1238,7 @@ class Database {
     public function using($class) {
         if (is_string($class)) {
             $this->class = $class;
-        }
-        else if (is_object($class)) {
+        } else if (is_object($class)) {
             $this->class = get_class($class);
         }
 
@@ -1423,11 +1281,9 @@ class Database {
         if ($value !== null) {
             if (is_int($value) && property_exists($properties, 'id_field')) {
                 $this->where($properties->id_field, $value);
-            }
-            else if (is_string($value) && property_exists($properties, 'name_field')) {
+            } else if (is_string($value) && property_exists($properties, 'name_field')) {
                 $this->where($properties->name_field, $value);
-            }
-            else if (is_array($value)) {
+            } else if (is_array($value)) {
                 $this->where($value);
             }
         }
@@ -1437,7 +1293,7 @@ class Database {
         }
 
         $data = $this->many($key);
-        $objects = array();
+        $objects = [];
 
         foreach ($data as $row) {
             $objects[] = $this->load(new $this->class, $row);
@@ -1465,20 +1321,16 @@ class Database {
         unset($data[$properties->id_field]);
 
         if ($id === null) {
-            $this->insert($data)
-                ->execute();
+            $this->insert($data)->execute();
 
             $object->{$properties->id_field} = $this->insert_id;
-        }
-        else {
+        } else {
             if ($fields !== null) {
                 $keys = array_flip($fields);
                 $data = array_intersect_key($data, $keys);
             }
 
-            $this->where($properties->id_field, $id)
-                ->update($data)
-                ->execute();
+            $this->where($properties->id_field, $id)->update($data)->execute();
         }
 
         return $this->class;
@@ -1499,9 +1351,7 @@ class Database {
         $id = $object->{$properties->id_field};
 
         if ($id !== null) {
-            $this->where($properties->id_field, $id)
-                ->delete()
-                ->execute();
+            $this->where($properties->id_field, $id)->delete()->execute();
         }
     }
 
@@ -1511,16 +1361,12 @@ class Database {
      * @return object Class properties
      */
     public function getProperties() {
-        static $properties = array();
+        static $properties = [];
 
-        if (!$this->class) return array();
+        if (!$this->class) return [];
 
         if (!isset($properties[$this->class])) {
-            static $defaults = array(
-                'table' => null,
-                'id_field' => null,
-                'name_field' => null
-            );
+            static $defaults = ['table' => null, 'id_field' => null, 'name_field' => null];
 
             $reflection = new ReflectionClass($this->class);
             $config = $reflection->getStaticProperties();

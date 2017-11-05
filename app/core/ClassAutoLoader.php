@@ -34,7 +34,7 @@ class ClassAutoLoader {
      * @return bool TRUE on success
      */
     public function registerAutoloader() {
-        return spl_autoload_register(array($this, '_autoloader_func'), true, true);
+        return spl_autoload_register([$this, '_autoloader_func'], true, true);
     }
 
     /**

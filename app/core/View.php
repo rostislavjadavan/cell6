@@ -21,7 +21,7 @@ class View {
     /**
      * @var array Params passed into view
      */
-    protected $params = array();
+    protected $params = [];
 
     /**
      * @var string View content
@@ -35,10 +35,10 @@ class View {
      * @param array $params
      * @return View
      */
-    public static function load(Container $container, $name, $params = array()) {
-        $filename = $container->make("\Core\ClassAutoLoader")->getClassPath('\views\\'.$name);
+    public static function load(Container $container, $name, $params = []) {
+        $filename = $container->make("\Core\ClassAutoLoader")->getClassPath('\views\\' . $name);
         if (!file_exists($filename)) {
-            return new View($container, '<span style="color:red">View '.$name.' not found.</span>', $params);
+            return new View($container, '<span style="color:red">View ' . $name . ' not found.</span>', $params);
 
         }
         return new View($container, file_get_contents($filename), $params);
@@ -51,7 +51,7 @@ class View {
      * @param $content
      * @param array $params
      */
-    public function __construct(Container $container, $content, $params = array()) {
+    public function __construct(Container $container, $content, $params = []) {
         $this->container = $container;
         $this->content = $content;
         $this->params = $params;
@@ -60,8 +60,8 @@ class View {
     /**
      * Set param
      *
-     * @param string $key  Key
-     * @param mixed $value  Value
+     * @param string $key Key
+     * @param mixed $value Value
      */
     public function setParam($key, $value) {
         $this->params[$key] = $value;
@@ -117,7 +117,7 @@ class View {
      */
     protected function translateCommonVars($content) {
         $baseUrl = $this->container->make("\Core\Request")->getBaseUrl();
-        $dict = array('{BASEURL}' => $baseUrl, '{PUBURL}' => $baseUrl . PUBDIR);
+        $dict = ['{BASEURL}' => $baseUrl, '{PUBURL}' => $baseUrl . PUBDIR];
         return strtr($content, $dict);
     }
 }

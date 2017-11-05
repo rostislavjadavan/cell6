@@ -62,7 +62,7 @@ class Application {
         }
 
         if ($result->getUrl() != $this->request->getRequestUrl()) {
-            return $this->container->make('\Core\RedirectResponse', array('url' => $result->getUrl()));
+            return $this->container->make('\Core\RedirectResponse', ['url' => $result->getUrl()]);
         }
 
         return $result->getResponse();
@@ -90,7 +90,7 @@ class Application {
             return $response;
         } catch (RuntimeException $e) {
             $content = "<html><head><title>Page not Found</title></htead><h1>500</h1><p>The requested URL was not found on this server.</p>";
-            return $this->container->make('\Core\HtmlResponse', array('content' => $content, 'code' => 404));
+            return $this->container->make('\Core\HtmlResponse', ['content' => $content, 'code' => 404]);
         }
     }
 
@@ -111,7 +111,7 @@ class Application {
                 return $response;
             } catch (RuntimeException $e) {
                 $content = "<html><head><title>Internal Server Error</title></htead><h1>500</h1><p>Internal Server Error</p>";
-                return $this->container->make('\Core\HtmlResponse', array('content' => $content, 'code' => 500));
+                return $this->container->make('\Core\HtmlResponse', ['content' => $content, 'code' => 500]);
             }
         }
     }

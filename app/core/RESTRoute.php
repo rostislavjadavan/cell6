@@ -13,30 +13,26 @@ class RESTRoute extends Route {
      */
     protected $container = null;
 
-	/**
-	 * Methods impemented by RESTController
-	 * @var array 
-	 */
-	private $allowedHttpMethods = array('GET', 'POST', 'PUT', 'DELETE');
+    /**
+     * Methods impemented by RESTController
+     * @var array
+     */
+    private $allowedHttpMethods = ['GET', 'POST', 'PUT', 'DELETE'];
 
     /**
      * Return response
      * @param array $params
      * @return Response Response
      */
-	public function getResponse($params = array()) {
-		$request = $this->container->make('\Core\Request');
-		
-		$method = $request->getMethod();
-		if (!in_array($method, $this->allowedHttpMethods)) {
-			throw new \RuntimeException("RestRoute: $method not implemented");
-		}
+    public function getResponse($params = []) {
+        $request = $this->container->make('\Core\Request');
 
-		return $this->container->makeAndInvoke(
-            '\controllers\\'.$this->params['class'],
-            strtolower($method),
-            array_merge($this->params, $params)
-        );
-	}
+        $method = $request->getMethod();
+        if (!in_array($method, $this->allowedHttpMethods)) {
+            throw new \RuntimeException("RestRoute: $method not implemented");
+        }
+
+        return $this->container->makeAndInvoke('\controllers\\' . $this->params['class'], strtolower($method), array_merge($this->params, $params));
+    }
 
 }

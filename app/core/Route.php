@@ -29,13 +29,13 @@ class Route {
      *
      * @var string Parameter format constraint (regular expression)
      */
-    protected $paramsConstraints = array();
+    protected $paramsConstraints = [];
 
     /**
      *
      * @var array Default params
      */
-    protected $params = array();
+    protected $params = [];
 
     /**
      * Route constructor.
@@ -43,7 +43,7 @@ class Route {
      * @param array $params
      * @param array $paramsConstraints
      */
-    public function __construct(Container $container, array $params = array(), array $paramsConstraints = array()) {
+    public function __construct(Container $container, array $params = [], array $paramsConstraints = []) {
         if (array_key_exists('uri', $params)) {
             $this->uri = ltrim($params['uri'], "/");
             $this->routeRegexp = $this->buildRouteRegexp($this->uri);
@@ -76,12 +76,12 @@ class Route {
 
         $uriTrimmed = trim($uri, '/');
 
-        $matches = array();
+        $matches = [];
         if (!preg_match($this->routeRegexp, $uriTrimmed, $matches)) {
             return false;
         }
 
-        $params = array();
+        $params = [];
         foreach ($matches as $key => $value) {
             if (is_int($key)) {
                 continue;
@@ -105,22 +105,20 @@ class Route {
      * @return Response Response
      * @throws RuntimeException
      */
-    public function getResponse($params = array()) {
+    public function getResponse($params = []) {
         if (array_key_exists('class', $this->params)) {
             $targetParts = explode('::', $this->params['class']);
             if (count($targetParts) < 2) {
-                throw new RuntimeException("Invalid route target: ".$this->params['class']);
+                throw new RuntimeException("Invalid route target: " . $this->params['class']);
             }
-            return $this->container->makeAndInvoke('\controllers\\'.$targetParts[0], $targetParts[1], array_merge($this->params, $params));
-        }
-        else if (array_key_exists('view', $this->params)) {
+            return $this->container->makeAndInvoke('\controllers\\' . $targetParts[0], $targetParts[1], array_merge($this->params, $params));
+        } else if (array_key_exists('view', $this->params)) {
             $view = View::load($this->container, $this->params['view']);
-            return $this->container->make('\Core\HtmlResponse', array('content' => $view->render()));
-        }
-        else if (array_key_exists('function', $this->params)) {
+            return $this->container->make('\Core\HtmlResponse', ['content' => $view->render()]);
+        } else if (array_key_exists('function', $this->params)) {
             return call_user_func($this->params['function']);
         }
-        throw new RuntimeException("No target defined for route ".$this->uri);
+        throw new RuntimeException("No target defined for route " . $this->uri);
     }
 
     /**
@@ -139,11 +137,11 @@ class Route {
      * @return string URI
      * @throws \Exception
      */
-    public function uri(array $params = NULL) {
+    public function uri(array $params = null) {
         $defaults = $this->params;
 
         $compile = function ($portion, $required) use (&$compile, $defaults, $params) {
-            $missing = array();
+            $missing = [];
 
             $pattern = '#(?:' . Route::REGEX_KEY . '|' . Route::REGEX_GROUP . ')#';
             $result = preg_replace_callback($pattern, function ($matches) use (&$compile, $defaults, &$missing, $params, &$required) {
@@ -162,10 +160,10 @@ class Route {
 
                     $missing[] = $param;
                 } else {
-                    $result = $compile($matches[2], FALSE);
+                    $result = $compile($matches[2], false);
 
                     if ($result[1]) {
-                        $required = TRUE;
+                        $required = true;
 
                         return $result[0];
                     }
@@ -173,13 +171,13 @@ class Route {
             }, $portion);
 
             if ($required && $missing) {
-                throw new RuntimeException('Route: Required route parameter not passed \'' . reset($missing).'\'');
+                throw new RuntimeException('Route: Required route parameter not passed \'' . reset($missing) . '\'');
             }
 
-            return array($result, $required);
+            return [$result, $required];
         };
 
-        list($uri) = $compile($this->uri, TRUE);
+        list($uri) = $compile($this->uri, true);
 
         $uri = preg_replace('#//+#', '/', rtrim($uri, '/'));
 
@@ -199,14 +197,14 @@ class Route {
     protected function buildRouteRegexp($uri) {
         $expression = preg_replace('#' . Route::REGEX_ESCAPE . '#', '\\\\$0', $uri);
 
-        if (strpos($expression, '(') !== FALSE) {
-            $expression = str_replace(array('(', ')'), array('(?:', ')?'), $expression);
+        if (strpos($expression, '(') !== false) {
+            $expression = str_replace(['(', ')'], ['(?:', ')?'], $expression);
         }
 
-        $regexp = str_replace(array('<', '>'), array('(?P<', '>' . Route::REGEX_SEGMENT . ')'), $expression);
+        $regexp = str_replace(['<', '>'], ['(?P<', '>' . Route::REGEX_SEGMENT . ')'], $expression);
 
         if (!empty($this->paramsConstraints)) {
-            $search = $replace = array();
+            $search = $replace = [];
             foreach ($this->paramsConstraints as $key => $value) {
                 $search[] = "<$key>" . Route::REGEX_SEGMENT;
                 $replace[] = "<$key>$value";

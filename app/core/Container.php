@@ -7,7 +7,7 @@ namespace Core;
  * @package Core
  */
 class Container {
-    private $storage = array();
+    private $storage = [];
 
     /**
      * Bind closure to class type
@@ -41,7 +41,7 @@ class Container {
      * @param array $params
      * @return mixed|object
      */
-    public function singleton($className, array $params = array()) {
+    public function singleton($className, array $params = []) {
         $className = $this->fixSlashInClassName($className);
         $instance = $this->make($className, $params);
         $this->storage[$className] = $instance;
@@ -56,14 +56,14 @@ class Container {
      * @return mixed|object
      * @throws RuntimeException
      */
-    public function make($className, array $args = array()) {
+    public function make($className, array $args = []) {
         $className = $this->fixSlashInClassName($className);
 
         if (array_key_exists($className, $this->storage)) {
             return $this->storage[$className];
         }
 
-        $callParams = array();
+        $callParams = [];
         try {
             $r = new \ReflectionClass($className);
         } catch (\ReflectionException $e) {
@@ -88,7 +88,7 @@ class Container {
      * @return mixed
      * @throws RuntimeException
      */
-    public function makeAndInvoke($className, $methodName, array $args = array()) {
+    public function makeAndInvoke($className, $methodName, array $args = []) {
         try {
             $instance = $this->make($className, $args);
             $method = new \ReflectionMethod($className, $methodName);
@@ -106,8 +106,8 @@ class Container {
      * @return array
      * @throws RuntimeException
      */
-    private function getParamsForInvocation(\ReflectionMethod $method, array $args = array()) {
-        $callParams = array();
+    private function getParamsForInvocation(\ReflectionMethod $method, array $args = []) {
+        $callParams = [];
 
         foreach ($method->getParameters() as $param) {
             $name = $param->getName();

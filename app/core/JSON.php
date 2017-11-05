@@ -11,32 +11,32 @@ class JSON {
     /**
      * Encode data to JSON format
      *
-     * @param string Data
+     * @param string $data Data
      * @return string JSON encoded data
-     * @throws \Exception
+     * @throws \RuntimeException
      */
     public function encode($data) {
         $result = json_encode($data);
 
-        if ($result == FALSE) {
-            throw new \Exception('JSON Encode Error:' . $this->getErrorMessage());
+        if ($result == false) {
+            throw new \RuntimeException('JSON Encode Error:' . $this->getErrorMessage());
         }
 
         return $result;
     }
 
     /**
-     * Decode JSON formated data
+     * Decode JSON formatted data
      *
      * @param string JSON encoded data
      * @param bool TRUE if convert to associative array
      * @return mixed Output data
-     * @throws \Exception
+     * @throws \RuntimeException
      */
-    public function decode($data, $objectsToAssocArray = FALSE) {
+    public function decode($data, $objectsToAssocArray = false) {
         $result = json_decode($data, $objectsToAssocArray);
 
-        if ($result == FALSE || $result == NULL) throw new \Exception('JSON Decode Error:' . $this->getErrorMessage());
+        if ($result == false || $result == null) throw new \RuntimeException('JSON Decode Error:' . $this->getErrorMessage());
 
         return $result;
     }
@@ -69,6 +69,7 @@ class JSON {
             default:
                 $error = 'Unknown error';
         }
+        return $error;
     }
 
 }

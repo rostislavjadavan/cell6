@@ -118,7 +118,7 @@ class Response {
      */
     public function setCookie($name, $value, $expire = 0, $path = '/') {
         $request = $this->container->make("\Core\Request");
-        $host = $request->isLocalhost() ? null : '.'.$request->getHost();
+        $host = $request->isLocalhost() ? null : '.' . $request->getHost();
         $expire = $expire > 0 ? time() + $expire : 0;
         return setcookie($name, $value, $expire, $path, $host);
     }

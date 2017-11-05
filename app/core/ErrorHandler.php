@@ -12,13 +12,13 @@ class ErrorHandler {
      *
      * @var array Define for what type of errors to call exception handler in shutdown function
      */
-    private $shutdownErrors = array(E_PARSE, E_ERROR, E_USER_ERROR);
+    private $shutdownErrors = [E_PARSE, E_ERROR, E_USER_ERROR];
 
     /**
      *
      * @var array List of errors that will be processed by standard PHP error handler
      */
-    private $disallowedErrors = array(E_NOTICE);
+    private $disallowedErrors = [E_NOTICE];
 
     /**
      * Register all necessary handlers to catch all possible error types
@@ -28,11 +28,11 @@ class ErrorHandler {
         if ($debugMode) {
             error_reporting(E_ALL);
             ini_set('display_errors', '1');
-            set_exception_handler(array($this, 'exceptionHandler'));
-            set_error_handler(array($this, 'errorHandler'));
+            set_exception_handler([$this, 'exceptionHandler']);
+            set_error_handler([$this, 'errorHandler']);
 
             // Register shutdown function to catch fatal errors
-            register_shutdown_function(array($this, 'shutdownHandler'));
+            register_shutdown_function([$this, 'shutdownHandler']);
         } else {
             error_reporting(0);
             ini_set('display_errors', '0');
@@ -66,7 +66,7 @@ class ErrorHandler {
      * @return bool
      * @throws \ErrorException
      */
-    public function errorHandler($code, $error, $file = NULL, $line = NULL) {
+    public function errorHandler($code, $error, $file = null, $line = null) {
         if (error_reporting() && !in_array($code, $this->disallowedErrors)) {
             throw new \ErrorException($error, $code, 0, $file, $line);
         }

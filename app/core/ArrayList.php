@@ -13,14 +13,14 @@ class ArrayList implements \ArrayAccess, \Countable {
     /**
      * @var array Data (key, value)
      */
-    protected $data = array();
+    protected $data = [];
 
     /**
      * Init
      *
      * @param array Initial data
      */
-    public function __construct($data = array()) {
+    public function __construct($data = []) {
         $this->data = $data;
     }
 
@@ -98,7 +98,7 @@ class ArrayList implements \ArrayAccess, \Countable {
      * Clear all data
      */
     public function clear() {
-        $this->data = array();
+        $this->data = [];
     }
 
     /**

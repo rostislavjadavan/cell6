@@ -37,14 +37,7 @@ if (file_exists(VENDOR . DIRECTORY_SEPARATOR . 'autoload.php')) {
 /**
  * Create request
  */
-$container->singleton("\Core\Request", array(
-    'server' => $_SERVER,
-    'query' => $_GET,
-    'post' => $_POST,
-    'files' => $_FILES,
-    'cookies' => $_COOKIE,
-    'session' => $container->make('\Core\Session')
-));
+$container->singleton("\Core\Request", ['server' => $_SERVER, 'query' => $_GET, 'post' => $_POST, 'files' => $_FILES, 'cookies' => $_COOKIE, 'session' => $container->make('\Core\Session')]);
 
 /**
  * Configuration
