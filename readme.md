@@ -192,6 +192,25 @@ Also there is placeholder that leads to _public_ directory:
 {PUBURL}
 ```
 
+## 404 and 500 responses
+```php
+class Main extends Controller {
+
+    public function showArticle($id) {
+        $article = $articleService->get($id);
+        if ($article) {
+            return $this->router->get404Response();
+        }
+        ...
+    }
+    
+    public function showError() {
+        return $this->router->get500Response();
+    }
+}
+```
+
+
 # Dependency injection
 
 There is simple DI container available that is able to construct object graph using constructor injection.
