@@ -198,7 +198,7 @@ class Main extends Controller {
 
     public function showArticle($id) {
         $article = $articleService->get($id);
-        if ($article) {
+        if (!$article) {
             return $this->router->get404Response();
         }
         ...
@@ -313,7 +313,7 @@ class Main extends Controller {
 
 ## Database model and Container
 
-You can use constructor injection in your database model.
+Constructor injection can be used also in database model.
 
 ```php
 class ArticleModel {
