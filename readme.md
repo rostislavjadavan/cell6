@@ -1,7 +1,7 @@
 
 ![](logo/cell6_logo.png)
 
-cell6 is php microframork that I made for fun and for my personal projects :)
+cell6 is php microframework that I made for fun and for my personal projects :)
 
 # Installation
 
