@@ -42,11 +42,25 @@ class Database {
     public $show_sql = false;
     public $key_prefix = '';
 
+    private $container = null;
+
     /**
      * Class constructor.
+     * @param null $db
      */
-    public function __construct() {
+    public function __construct($db = null) {
+        if ($db != null && is_string($db)) {
+            $this->setDb($db);
+        }
     }
+
+    /**
+     * @param null $container
+     */
+    public function setContainer($container) {
+        $this->container = $container;
+    }
+
 
     /*** Core Methods ***/
 
@@ -702,7 +716,7 @@ class Database {
                             $this->affected_rows = $result->rowCount();
                             $this->insert_id = $this->db->lastInsertId();
                         }
-                    } catch (\PDO\Exception $ex) {
+                    } catch (\Exception $ex) {
                         $error = $ex->getMessage();
                     }
 
@@ -1295,11 +1309,61 @@ class Database {
         $data = $this->many($key);
         $objects = [];
 
-        foreach ($data as $row) {
-            $objects[] = $this->load(new $this->class, $row);
+        if ($this->container instanceof Container) {
+            foreach ($data as $row) {
+                $objects[] = $this->load($this->container->make($this->class), $row);
+            }
+        } else {
+            foreach ($data as $row) {
+                $objects[] = $this->load(new $this->class, $row);
+            }
         }
 
         return (sizeof($objects) == 1) ? $objects[0] : $objects;
+    }
+
+    /**
+     * Finds and populates an object.
+     *
+     * @param int|string|array Search value
+     * @param string $key Cache key
+     * @return object Populated object
+     */
+    public function findMany($value = null, $key = null) {
+        $this->checkClass();
+
+        $properties = $this->getProperties();
+
+        $this->from($properties->table, false);
+
+        if ($value !== null) {
+            if (is_int($value) && property_exists($properties, 'id_field')) {
+                $this->where($properties->id_field, $value);
+            } else if (is_string($value) && property_exists($properties, 'name_field')) {
+                $this->where($properties->name_field, $value);
+            } else if (is_array($value)) {
+                $this->where($value);
+            }
+        }
+
+        if (empty($this->sql)) {
+            $this->select();
+        }
+
+        $data = $this->many($key);
+        $objects = [];
+
+        if ($this->container instanceof Container) {
+            foreach ($data as $row) {
+                $objects[] = $this->load($this->container->make($this->class), $row);
+            }
+        } else {
+            foreach ($data as $row) {
+                $objects[] = $this->load(new $this->class, $row);
+            }
+        }
+
+        return $objects;
     }
 
     /**
@@ -1368,7 +1432,7 @@ class Database {
         if (!isset($properties[$this->class])) {
             static $defaults = ['table' => null, 'id_field' => null, 'name_field' => null];
 
-            $reflection = new ReflectionClass($this->class);
+            $reflection = new \ReflectionClass($this->class);
             $config = $reflection->getStaticProperties();
 
             $properties[$this->class] = (object)array_merge($defaults, $config);

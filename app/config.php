@@ -12,6 +12,7 @@ $config['app'] = "cell6 application";
  */
 $database = $container->singleton("\Core\Database");
 $database->setDb('pdosqlite://localhost/' . SYSPATH . DIRECTORY_SEPARATOR . 'database/database.sqlite');
+$database->setContainer($container);
 
 /**
  * Routes

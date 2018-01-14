@@ -99,14 +99,31 @@ class Container {
     }
 
     /**
+     * Invoke closure (callable) and inject parameters
+     *
+     * @param callable $closure
+     * @param array $params
+     * @return mixed
+     * @throws RuntimeException
+     */
+    public function invokeClosure(callable $closure, array $params = []) {
+        try {
+            $function = new \ReflectionFunction($closure);
+            return $function->invokeArgs($this->getParamsForInvocation($function, $params));
+        } catch (\ReflectionException $e) {
+            throw new RuntimeException($e);
+        }
+    }
+
+    /**
      * Examine method params and return dependencies for invocation
      *
-     * @param \ReflectionMethod $method
+     * @param \ReflectionFunctionAbstract $method
      * @param array $args
      * @return array
      * @throws RuntimeException
      */
-    private function getParamsForInvocation(\ReflectionMethod $method, array $args = []) {
+    private function getParamsForInvocation(\ReflectionFunctionAbstract $method, array $args = []) {
         $callParams = [];
 
         foreach ($method->getParameters() as $param) {

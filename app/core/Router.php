@@ -117,9 +117,31 @@ class Router {
      */
     public function getRoute($name) {
         if (!array_key_exists($name, $this->routes)) {
-            throw new RuntimeException('Router: Route ' . $name . ' not found.');
+            throw new RuntimeException('Router: Route \'' . $name . '\' not found.');
         }
         return $this->routes[$name];
+    }
+
+    /**
+     * Get 404 Response object
+     *
+     * @return mixed
+     */
+    public function get404Response() {
+        $response = $this->getRoute('404')->getResponse();
+        $response->setCode(404);
+        return $response;
+    }
+
+    /**
+     * Get 500 Response object
+     *
+     * @return mixed
+     */
+    public function get500Response() {
+        $response = $this->getRoute('404')->getResponse();
+        $response->setCode(500);
+        return $response;
     }
 
     /**

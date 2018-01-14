@@ -159,6 +159,19 @@ In view _Router_ is available as _$router_.
     <li><a href="<?php echo $router->url("page2", ['name' => 'Rob']) ?>">/page2 with name</a></li>
 </ul>
 ```
+
+In controller url generator is available as: 
+
+```php
+class Main extends Controller {
+
+    public function index() {
+        $url = $this->url('route_name', ['param' => 1]);
+        ...
+    }
+}
+```
+
 ## Base Url
 
 Base url is available in request:
@@ -276,5 +289,33 @@ class Main extends Controller {
         }        
         return $this->html("user not found", 404);
     }
+}
+```
+
+## Database model and Container
+
+You can use constructor injection in your database model.
+
+```php
+class ArticleModel {
+    static $table = 'articles';
+    
+    public $id;
+    public $date;
+    public $title;
+    public $content;
+    
+    private $router = null;
+    private $config = null;
+    
+    public function __construct(Router $router, Config $config) {            
+        $this->router = $router;
+        $this->config = $config;
+    }
+    
+    public function getUrl() {
+        return $this->router->url('article', ['id' => $this->id]);
+    }
+    
 }
 ```

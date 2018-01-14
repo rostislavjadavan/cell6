@@ -11,6 +11,7 @@ class Controller {
 
     protected $container = null;
     protected $config = null;
+    protected $router = null;
 
     /**
      * Controller constructor.
@@ -20,6 +21,7 @@ class Controller {
     public function __construct(Container $container, Config $config) {
         $this->container = $container;
         $this->config = $config;
+        $this->router = $this->container->make("\Core\Router");
     }
 
     /**
@@ -75,5 +77,17 @@ class Controller {
         $templateView->setParams($data);
         $templateView->setParam('content', $contentView->render());
         return $this->html($templateView->render(), $code);
+    }
+
+    /**
+     * Create url based on given route name
+     *
+     * @param $name
+     * @param array $params
+     * @param array $query
+     * @return mixed
+     */
+    public function url($name, array $params = [], array $query = []) {
+        return $this->router->url($name, $params, $query);
     }
 }

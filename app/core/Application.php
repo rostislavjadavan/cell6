@@ -85,9 +85,7 @@ class Application {
      */
     protected function processPageNotFound() {
         try {
-            $response = $route = $this->router->getRoute('404')->getResponse();
-            $response->setCode(404);
-            return $response;
+            return $this->router->get404Response();
         } catch (RuntimeException $e) {
             $content = "<html><head><title>Page not Found</title></htead><h1>500</h1><p>The requested URL was not found on this server.</p>";
             return $this->container->make('\Core\HtmlResponse', ['content' => $content, 'code' => 404]);
@@ -106,9 +104,7 @@ class Application {
             throw $e;
         } else {
             try {
-                $response = $route = $this->router->getRoute('500')->getResponse();
-                $response->setCode(500);
-                return $response;
+                return $this->router->get500Response();
             } catch (RuntimeException $e) {
                 $content = "<html><head><title>Internal Server Error</title></htead><h1>500</h1><p>Internal Server Error</p>";
                 return $this->container->make('\Core\HtmlResponse', ['content' => $content, 'code' => 500]);

@@ -116,7 +116,7 @@ class Route {
             $view = View::load($this->container, $this->params['view']);
             return $this->container->make('\Core\HtmlResponse', ['content' => $view->render()]);
         } else if (array_key_exists('function', $this->params)) {
-            return call_user_func($this->params['function']);
+            return $this->container->invokeClosure($this->params['function'], array_merge($this->params, $params));
         }
         throw new RuntimeException("No target defined for route " . $this->uri);
     }
@@ -186,7 +186,7 @@ class Route {
 
     const REGEX_GROUP = '\(((?:(?>[^()]+)|(?R))*)\)';
     const REGEX_KEY = '<([a-zA-Z0-9_]++)>';
-    const REGEX_SEGMENT = '[^/.,;?\n]++';
+    const REGEX_SEGMENT = '[^/,;?\n]++';
     const REGEX_ESCAPE = '[.\\+*?[^\\]${}=!|]';
 
     /**
