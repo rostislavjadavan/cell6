@@ -97,9 +97,8 @@ class Request {
             if (strpos($uri, '?') !== false) {
                 $uri = substr($uri, 0, strpos($uri, '?'));
             }
-
-            $this->path = str_replace($rewriteBase, '', $uri);
         }
+        $this->path = str_replace($rewriteBase, '', $this->path);
         $this->path = ltrim($this->path, '/');
     }
 
