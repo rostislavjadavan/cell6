@@ -47,10 +47,15 @@ class ClassAutoLoader {
         $class = ltrim($class, '\\');
         $segments = preg_split('#[\\\\]#', $class);
 
-        $file = SYSPATH . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $segments) . '.php';
+        $filename = array_pop($segments);
+        array_walk($segments, function (&$array, &$key) {
+            $array[$key] = strtolower($array[$key]);
+        });
 
-        if (file_exists($file)) {
-            return include_once $file;
+        $path = SYSPATH . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $segments) . DIRECTORY_SEPARATOR . $filename . '.php';
+
+        if (file_exists($path)) {
+            return include_once $path;
         }
 
         return false;
