@@ -58,7 +58,7 @@ class Controller {
      * @return HtmlResponse
      */
     public function view($name, array $data =[], $code = 200) {
-        return $this->html(View::load($name, $data), $code);
+        return $this->html(View::load($this->container, $name, $data), $code);
     }
 
     /**

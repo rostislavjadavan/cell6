@@ -124,4 +124,15 @@ class View {
         $dict = ['{BASEURL}' => $baseUrl, '{PUBURL}' => $baseUrl . PUBDIR];
         return strtr($content, $dict);
     }
+
+    /**
+     * Create View (used in view to create partial View)
+     *
+     * @param $name
+     * @param array $data
+     * @return View
+     */
+    protected function partial($name, array $data = []) {
+        return View::load($this->container, $name, $data);
+    }
 }

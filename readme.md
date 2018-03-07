@@ -147,6 +147,19 @@ class Main extends Controller {
 }
 ```
 
+# View
+
+There is no built-in view engine, just plain php files.
+
+## Partial views
+
+To render view inside view use:
+
+```php
+<?php echo $this->partial("partials\view_name", ['data' => $data]) ?>
+
+```
+
 # Url
 
 Url generator is _Router_ class.
