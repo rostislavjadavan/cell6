@@ -128,7 +128,7 @@ class Container {
 
         foreach ($method->getParameters() as $param) {
             $name = $param->getName();
-            $type = $param->getType() == null ? $param->getType() : $this->fixSlashInClassName($param->getType()->__toString());
+            $type = $this->getParamType($param);
 
             if ($type == null || $type == '\array') {
                 if (array_key_exists($name, $args)) {
@@ -157,6 +157,27 @@ class Container {
             }
         }
         return $callParams;
+    }
+
+    /**
+     * Get parameter type (PHP 5.6 version)
+     *
+     * @param \ReflectionParameter $param
+     * @return null|string
+     */
+    private function getParamType(\ReflectionParameter $param) {
+        // PHP 7
+        // $param->getType() == null ? $param->getType() : $this->fixSlashInClassName($param->getType()->__toString());
+
+        if ($param->isArray()) {
+            return "\array";
+        }
+        try {
+            $class = $param->getClass();
+            return $class == null ? null : $this->fixSlashInClassName($class->getName());
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     /**
