@@ -12,6 +12,7 @@ class Controller {
     protected $container = null;
     protected $config = null;
     protected $router = null;
+    protected $asset = null;
 
     /**
      * Controller constructor.
@@ -22,6 +23,7 @@ class Controller {
         $this->container = $container;
         $this->config = $config;
         $this->router = $this->container->make("\Core\Router");
+        $this->asset = $this->container->make("\Core\Asset");
     }
 
     /**
@@ -46,7 +48,7 @@ class Controller {
      * @return JsonResponse
      */
     public function json(array $data, $code = 200) {
-        return $this->container->make('\Core\JsonResponse', ['content' => $data, 'code' => $code]);
+        return $this->container->make('\Core\JSONResponse', ['content' => $data, 'code' => $code]);
     }
 
     /**

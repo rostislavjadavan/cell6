@@ -102,6 +102,24 @@ class ArrayList implements \ArrayAccess, \Countable {
     }
 
     /**
+     * Get first element
+     *
+     * @return mixed
+     */
+    public function first() {
+        return reset($this->data);
+    }
+
+    /**
+     * Get last element
+     *
+     * @return mixed
+     */
+    public function last() {
+        return end($this->data);
+    }
+
+    /**
      * Return number of elements in list
      *
      * @return int Number of elements

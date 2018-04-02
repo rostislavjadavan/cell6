@@ -10,10 +10,12 @@ class RESTController extends Controller {
 
     protected $request;
     protected $container;
+    protected $config;
 
-    public function __construct(Request $request, Container $container) {
+    public function __construct(Request $request, Container $container, Config $config) {
         $this->request = $request;
         $this->container = $container;
+        $this->config = $config;
     }
 
     public function getBody() {

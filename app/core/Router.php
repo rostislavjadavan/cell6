@@ -139,7 +139,7 @@ class Router {
      * @return mixed
      */
     public function get500Response() {
-        $response = $this->getRoute('404')->getResponse();
+        $response = $this->getRoute('500')->getResponse();
         $response->setCode(500);
         return $response;
     }

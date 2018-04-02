@@ -21,10 +21,18 @@ class ErrorHandler {
     private $disallowedErrors = [E_NOTICE];
 
     /**
+     * @var string File to log in
+     */
+    private $logExceptionsToFile;
+
+    /**
      * Register all necessary handlers to catch all possible error types
      * @param bool $debugMode
+     * @param string $logExceptionsToFile
      */
-    public function register($debugMode = true) {
+    public function register($debugMode = true, $logExceptionsToFile = "app_errors.log") {
+        $this->logExceptionsToFile = $logExceptionsToFile;
+
         if ($debugMode) {
             error_reporting(E_ALL);
             ini_set('display_errors', '1');
@@ -36,8 +44,6 @@ class ErrorHandler {
         } else {
             error_reporting(0);
             ini_set('display_errors', '0');
-
-            // TODO: log exceptions to file
         }
     }
 
@@ -51,6 +57,7 @@ class ErrorHandler {
      */
     public function exceptionHandler($e) {
         $this->renderException($e);
+        $this->logException($e);
         return true;
     }
 
@@ -85,16 +92,37 @@ class ErrorHandler {
 
         if (error_reporting() && $error && in_array($error['type'], $this->shutdownErrors)) {
             ob_clean();
-            $this->renderException(new \ErrorException($error['message'], $error['type'], 0, $error['file'], $error['line']));
+            $e = new \ErrorException($error['message'], $error['type'], 0, $error['file'], $error['line']);
+            $this->renderException($e);
+            $this->logException($e);
         }
 
         exit(1);
     }
 
     /**
+     * Log exception to file
+     *
+     * @param $exception
+     */
+    private function logException($exception) {
+        if ($this->logExceptionsToFile == false) {
+            return;
+        }
+        $type = get_class($exception);
+        $date = date("Y-m-d H:i:s");
+        $out = <<< EOD
+{$date} {$type}: {$exception->getMessage()} (code:{$exception->getCode()}) in {$exception->getFile()} on line {$exception->getLine()}.
+{$exception->getTraceAsString()}
+EOD;
+        file_put_contents($this->logExceptionsToFile, $out.PHP_EOL, FILE_APPEND);
+    }
+
+    /**
      * @param $exception
      */
     private function renderException($exception) {
+        $type = get_class($exception);
         header("HTTP/1.0 500 Internal Server Error");
         $out = <<< EOD
 <html>
@@ -112,7 +140,7 @@ class ErrorHandler {
 	</head>
 	<body>
 		<div class="error-message">
-			<h1>ERROR {$exception->getCode()}: {$exception->getMessage()}</h1>
+			<h1>{$type}: {$exception->getMessage()} (code:{$exception->getCode()})</h1>
 			<h2>File {$exception->getFile()} on line {$exception->getLine()}.</h2>
 		</div>
 		<div class="trace">
