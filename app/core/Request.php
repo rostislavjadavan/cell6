@@ -223,6 +223,9 @@ class Request {
      * @return bool true if it is HTTPS
      */
     public function isHttps() {
+        if ($this->server->is("HTTP_X_FORWARDED_PROTO")) {
+            return true;
+        }
         if (!$this->server->is('HTTPS')) {
             return false;
         } else {
